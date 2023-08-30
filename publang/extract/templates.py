@@ -81,5 +81,5 @@ ZERO_SHOT_MULTI_GROUP = {
             }
         }
     }
-  },'
+  },
 }

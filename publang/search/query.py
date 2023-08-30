@@ -1,6 +1,6 @@
 import numpy as np
 from typing import List, Tuple
-from publang.embed.base import embed_text
+from publang.search.embed import embed_text
 from sklearn.metrics.pairwise import euclidean_distances, cosine_distances
 
 def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:

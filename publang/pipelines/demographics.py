@@ -1,9 +1,10 @@
+
 from typing import List, Dict
 import pandas as pd
 import os
 import numpy as np
 import openai
-from publang.embed.embed import embed_pmc_articles
+from publang.search.embed import embed_pmc_articles
 from publang.extract.extract import search_extract
 from publang.extract.templates import ZERO_SHOT_MULTI_GROUP
 
@@ -44,7 +45,6 @@ def extract_gpt_demographics(
         min_tokens: int = 30, 
         max_tokens: int = 4000,
         search_query: str = None,
-        heuristic_strategy: str = None,
         template: dict = None,
         extraction_model_name: str = 'gpt-3.5-turbo',
         clean_preds: bool = True,

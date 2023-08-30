@@ -6,9 +6,8 @@ from copy import deepcopy
 from typing import List, Dict, Union
 import concurrent.futures
 
-from publang.embed.embed import get_chunk_query_distance
 from publang.extract.openai import get_openai_json_response, format_string_with_variables
-from publang.extract.search import get_chunks_heuristic, get_relevant_chunks
+from publang.search import get_relevant_chunks, get_chunk_query_distance
 
 def extract_from_text(
         text: str, 
