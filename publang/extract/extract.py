@@ -55,23 +55,16 @@ def extract_from_multiple(
         num_workers: An integer specifying the number of workers to use for parallel processing.
     """
 
-    if num_workers > 1:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
-            futures = [
-                executor.submit(
-                    extract_from_text, text, messages, parameters, model_name) 
-                for text in texts
-                ]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [
+            executor.submit(
+                extract_from_text, text, messages, parameters, model_name) 
+            for text in texts
+            ]
 
-            results = []
-            for future in tqdm.tqdm(futures, total=len(texts)):
-                results.append(future.result())
-
-    else:
         results = []
-        for text in tqdm.tqdm(texts):
-            results.append(
-                extract_from_text(text, messages, parameters, model_name))
+        for future in tqdm.tqdm(futures, total=len(texts)):
+            results.append(future.result())
 
     return results
 
@@ -121,14 +114,6 @@ def search_extract(
     """ Search for query in embeddings_df and extract annotations from nearest chunks,
     using heuristic to narrow down search space if specified.
     """
-
-    # Use heuristic to narrow down search space
-    if heuristic_strategy == None:
-        embeddings_df = embeddings_df[embeddings_df.section_0 == 'Body']
-    elif heuristic_strategy == 'methods':
-        embeddings_df = get_chunks_heuristic(embeddings_df, section_2=False)
-    elif heuristic_strategy == 'demographics':
-        embeddings_df = get_chunks_heuristic(embeddings_df, section_2=True)
 
     # Search for query in chunks
     ranks_df = get_chunk_query_distance(embeddings_df, query)

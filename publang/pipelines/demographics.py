@@ -81,7 +81,8 @@ def extract_gpt_demographics(
         if articles is None:
             raise ValueError('Either articles or embeddings must be provided.')
         print('Embedding articles...')
-        embeddings = embed_pmc_articles(articles, embedding_model_name, min_tokens, max_tokens)
+        embeddings = embed_pmc_articles(
+            articles, embedding_model_name, min_tokens, max_tokens, num_workers=num_workers)
         embeddings = pd.DataFrame(embeddings)
 
     if search_query is None:
@@ -90,9 +91,11 @@ def extract_gpt_demographics(
     if template is None:
         template = ZERO_SHOT_MULTI_GROUP
 
+    embeddings_search = embeddings[embeddings.section_0 == 'Body']
+
     print('Extracting demographics...')
     predictions = search_extract(
-        embeddings, search_query, **template, 
+        embeddings_search, search_query, **template, 
         model_name=extraction_model_name, 
         num_workers=num_workers
         )

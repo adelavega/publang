@@ -5,7 +5,8 @@ import tqdm
 import numpy as np
 from publang.search.split import split_pmc_document
 from typing import Dict, List, Tuple
-from sklearn.metrics.pairwise import euclidean_distances
+import concurrent.futures
+from sklearn.metrics.pairwise import euclidean_distances 
 
 def embed_text(text: str, model_name: str = 'text-embedding-ada-002') -> List[float]:
     """ Embed a document using OpenAI's API """
@@ -23,7 +24,8 @@ def embed_pmc_article(
         document: str, 
         model_name: str = 'text-embedding-ada-002', 
         min_tokens: int = 30, 
-        max_tokens: int = 4000) -> List[Dict[str, any]]:
+        max_tokens: int = 4000, 
+        **kwargs) -> List[Dict[str, any]]:
     """ Embed a PMC article using OpenAI's API. 
     Split the article into chunks of min_tokens to max_tokens,
     and embed each chunk.
@@ -36,7 +38,8 @@ def embed_pmc_article(
         for chunk in split_doc:
             res = embed_text(chunk['content'], model_name)
             chunk['embedding'] = res
-
+            for key, value in kwargs.items():
+                chunk[key] = value
         return split_doc
     else:
         return []
@@ -45,18 +48,25 @@ def embed_pmc_articles(
         articles: List[Dict], # List of dicts with keys 'pmcid' and 'text'
         model_name: str = 'text-embedding-ada-002', 
         min_tokens: int = 30, 
-        max_tokens: int = 4000) -> List[Dict[str, any]]:
+        max_tokens: int = 4000,
+        num_workers: int = 1
+        ) -> List[Dict[str, any]]:
     """ Embed a list of PMC articles using OpenAI's API. 
     Split the article into chunks of min_tokens to max_tokens,
     and embed each chunk.
     """
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [
+            executor.submit(
+                embed_pmc_article, art['text'], model_name, min_tokens, max_tokens, 
+                pmcid=art['pmcid']) 
+            for art in articles
+            ]
 
-    results = []
-    for art in tqdm.tqdm(articles):
-        for chunk in embed_pmc_article(art['text'], model_name, min_tokens, max_tokens):
-            if chunk:
-                chunk['pmcid'] = art['pmcid']
-                results.append(chunk)
+        results = []
+        for future in tqdm.tqdm(futures, total=len(articles)):
+            results += future.result()
+
     return results
 
 def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
