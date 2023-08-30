@@ -7,8 +7,6 @@ This tool facilitates extracting and evaluating structured annotations over corp
 
 ## Installation
 
-To install publang, simply clone the repository and install the required dependencies:
-
     git clone https://github.com/adelavega/publang.git 
-    cd publang pip install -r requirements.txt
-
+    cd publang
+    pip install -e .
