@@ -45,7 +45,7 @@ def embed_pmc_article(
         return []
 
 def embed_pmc_articles(
-        articles: List[Dict], # List of dicts with keys 'pmcid' and 'text'
+        articles: List[Dict],  # List of dicts with keys 'pmcid' and 'text'
         model_name: str = 'text-embedding-ada-002', 
         min_tokens: int = 30, 
         max_tokens: int = 4000,

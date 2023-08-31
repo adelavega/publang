@@ -61,6 +61,9 @@ def score_columns(true_df, predict_df,  scoring='mpe'):
         # Index of rows where both true_df and predict_df are not nan
         ix = true_df_mean_col.index.intersection(predict_df_mean_col.index)
 
+        if len(ix) == 0:
+            continue
+
         overlap = np.round(len(ix) / predict_df_mean_col.shape[0], 2)
 
         # Mean aggregation
@@ -88,10 +91,11 @@ def score_columns(true_df, predict_df,  scoring='mpe'):
 
 def hungarian_match_compare(true_df, predict_df):
     """ Compare two dataframes by matching rows using the Hungarian algorithm. """
+    compare_col = list(set(true_df.columns) & set(predict_df.columns) - {'pmcid'})
     res = defaultdict(float)
     for pmcid, df in true_df.groupby('pmcid'):
         for col in df:
-            if col != 'pmcid':
+            if col in compare_col:
                 match_predict_df = predict_df[predict_df.pmcid == pmcid][col].to_list()
                 score = 0
                 for v in df[col]:
