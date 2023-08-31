@@ -2,6 +2,8 @@ import numpy as np
 from typing import List, Tuple
 from publang.search.embed import embed_text
 from sklearn.metrics.pairwise import euclidean_distances, cosine_distances
+import concurrent.futures
+import tqdm
 
 def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
     """Rank a list of numbers in descending order relative to their original index.
@@ -36,13 +38,21 @@ def query_embeddings(
 
     return distances, _rank_numbers(distances)
 
-def get_chunk_query_distance(embeddings_df, query):
+def get_chunk_query_distance(embeddings_df, query, num_workers=1):
     # For every document, get distance and rank between query and embeddings
-    distances, ranks = zip(*[
-        query_embeddings(sub_df['embedding'].tolist(), query) 
-        for pmcid, sub_df in embeddings_df.groupby('pmcid', sort=False)
-    ])
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [
+            executor.submit(
+                query_embeddings, sub_df['embedding'].tolist(), query) 
+            for pmcid, sub_df in embeddings_df.groupby('pmcid', sort=False)
+            ]
 
+        results = []
+        for future in tqdm.tqdm(futures, total=len(embeddings_df.pmcid.unique())):
+            results.append(future.result())
+
+    distances, ranks = zip(*results)
+        
     # Combine with meta-data into a df
     ranks_df = embeddings_df[['pmcid', 'content', 'start_char', 'end_char']].copy()
     ranks_df['distance'] = np.concatenate(distances)

@@ -116,26 +116,22 @@ def search_extract(
     """
 
     # Search for query in chunks
-    ranks_df = get_chunk_query_distance(embeddings_df, query)
+    print('Computing distances...')
+    ranks_df = get_chunk_query_distance(embeddings_df, query, num_workers=num_workers)
     ranks_df.sort_values('distance', inplace=True)
     
     # For every document, try to extract annotations by distance until one succeeds
-    if num_workers > 1:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
-            futures = [
-                executor.submit(
-                    _extract_iteratively, sub_df, messages, parameters, model_name) 
-                for _, sub_df in ranks_df.groupby('pmcid', sort=False)
-                ]
+    print('Extracting annotations...')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [
+            executor.submit(
+                _extract_iteratively, sub_df, messages, parameters, model_name) 
+            for _, sub_df in ranks_df.groupby('pmcid', sort=False)
+            ]
 
-            results = []
-            for future in tqdm.tqdm(futures, total=len(ranks_df.pmcid.unique())):
-                results.extend(future.result())
-    else:
         results = []
-        for _, sub_df in tqdm.tqdm(ranks_df.groupby('pmcid', sort=False)):
-            results.extend(_extract_iteratively(sub_df, messages, parameters, model_name))
-
+        for future in tqdm.tqdm(futures, total=len(ranks_df.pmcid.unique())):
+            results.extend(future.result())
     results = pd.DataFrame(results)
 
     return results
