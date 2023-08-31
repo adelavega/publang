@@ -56,8 +56,7 @@ def extract_gpt_demographics(
 
     Args:
         articles (list): List of articles. Each article is a dictionary with keys 'pmcid' and 'text'.
-        embeddings (pd.DataFrame): Embeddings for each article. If None, embeddings will be computed.
-                                   if provided, articles are not required.
+        embeddings_path (str): Path to parquet file to save the embeddings to. If None, the embeddings will 
         api_key (str): OpenAI API key. If None, the key will be read from the OPENAI_API_KEY environment variable.
         embedding_model_name (str): Name of the OpenAI embedding model to use.
         min_tokens (int): Minimum number of tokens per chunk.
@@ -68,8 +67,7 @@ def extract_gpt_demographics(
         extraction_model_name (str): Name of the OpenAI model to use for the extraction.
         clean_preds (bool): Whether to clean the predictions.
         num_workers (int): Number of workers to use for parallel processing.
-        embeddings_path (str): Path to save the embeddings to.
-        predictions_path (str): Path to save the predictions to.
+        predictions_path (str): Path to csv save the predictions to.
     Returns:
         pd.DataFrame: Dataframe containing the extracted values.
         pd.DataFrame: Dataframe containing the chunked embeddings for each article.
@@ -80,8 +78,9 @@ def extract_gpt_demographics(
     else:
         openai.api_key = os.environ.get('OPENAI_API_KEY', None)
 
+    embeddings = None
     if embeddings_path is not None and os.path.exists(embeddings_path):
-        embeddings = pd.read_csv(embeddings_path)
+        embeddings = pd.read_parquet(embeddings_path)
 
     if embeddings is None:
         if articles is None:
@@ -92,7 +91,7 @@ def extract_gpt_demographics(
         embeddings = pd.DataFrame(embeddings)
 
         if embeddings_path is not None:
-            embeddings.to_csv(embeddings_path, index=False)
+            embeddings.to_parquet(embeddings_path, index=False)
 
     if search_query is None:
         search_query = 'How many participants or subjects were recruited for this study?' 
@@ -100,11 +99,11 @@ def extract_gpt_demographics(
     if template is None:
         template = ZERO_SHOT_MULTI_GROUP
 
-    embeddings_search = embeddings[embeddings.section_0 == 'Body']
+    embeddings = embeddings[embeddings.section_0 == 'Body']
 
     print('Extracting demographics...')
     predictions = search_extract(
-        embeddings_search, search_query, **template, 
+        embeddings, search_query, **template, 
         model_name=extraction_model_name, 
         num_workers=num_workers
         )
@@ -115,4 +114,4 @@ def extract_gpt_demographics(
     if clean_preds:
         predictions = _clean_gpt_demo_predictions(predictions)
 
-    return predictions, embeddings
+    return predictions

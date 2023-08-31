@@ -44,7 +44,7 @@ def get_chunk_query_distance(embeddings_df, query, num_workers=1):
         futures = [
             executor.submit(
                 query_embeddings, sub_df['embedding'].tolist(), query) 
-            for pmcid, sub_df in embeddings_df.groupby('pmcid', sort=False)
+            for _, sub_df in embeddings_df.groupby('pmcid', sort=False)
             ]
 
         results = []

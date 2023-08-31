@@ -110,7 +110,7 @@ def _extract_iteratively(
 
 def search_extract(
         embeddings_df, query, messages, parameters, model_name="gpt-3.5-turbo", 
-        heuristic_strategy=None, num_workers=1):
+        num_workers=1):
     """ Search for query in embeddings_df and extract annotations from nearest chunks,
     using heuristic to narrow down search space if specified.
     """
