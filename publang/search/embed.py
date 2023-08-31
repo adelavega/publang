@@ -8,13 +8,35 @@ from typing import Dict, List, Tuple
 import concurrent.futures
 from sklearn.metrics.pairwise import euclidean_distances 
 
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+    retry_if_exception_type
+)
+
+
+@retry(
+    retry=retry_if_exception_type((
+        openai.error.APIError, 
+        openai.error.APIConnectionError, 
+        openai.error.RateLimitError, 
+        openai.error.ServiceUnavailableError, 
+        openai.error.Timeout)), 
+    wait=wait_random_exponential(multiplier=1, max=60), 
+    stop=stop_after_attempt(10)
+)
+def openaiembedding_with_backoff(input, model):
+    return openai.Embedding.create(
+        input=model,
+        model=model
+    )
+
+
 def embed_text(text: str, model_name: str = 'text-embedding-ada-002') -> List[float]:
     """ Embed a document using OpenAI's API """
     # Return the embedding
-    response = openai.Embedding.create(
-        input=text,
-        model=model_name
-    )
+    response = openaiembedding_with_backoff(text, model_name)
     embeddings = response['data'][0]['embedding']
 
     return embeddings
