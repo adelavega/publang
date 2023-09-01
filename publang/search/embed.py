@@ -23,8 +23,7 @@ from tenacity import (
         openai.error.RateLimitError, 
         openai.error.ServiceUnavailableError, 
         openai.error.Timeout)), 
-    wait=wait_random_exponential(multiplier=1, max=60), 
-    stop=stop_after_attempt(10)
+    wait=wait_random_exponential(multiplier=1, max=60)
 )
 def openaiembedding_with_backoff(input, model):
     return openai.Embedding.create(
