@@ -3,6 +3,7 @@
 import openai
 import json
 import re 
+import warnings
 from typing import List, Dict
 
 from tenacity import (
@@ -20,8 +21,7 @@ from tenacity import (
         openai.error.RateLimitError, 
         openai.error.ServiceUnavailableError, 
         openai.error.Timeout)), 
-    wait=wait_random_exponential(multiplier=1, max=60), 
-    stop=stop_after_attempt(10)
+    wait=wait_random_exponential(multiplier=1, max=100)
 )
 def chat_completion_with_backoff(**kwargs):
     return openai.ChatCompletion.create(**kwargs)
