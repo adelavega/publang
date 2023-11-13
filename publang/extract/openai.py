@@ -21,7 +21,8 @@ from tenacity import (
         openai.error.RateLimitError, 
         openai.error.ServiceUnavailableError, 
         openai.error.Timeout)), 
-    wait=wait_random_exponential(multiplier=1, max=100)
+    wait=wait_random_exponential(multiplier=1, max=100), 
+    stop=stop_after_attempt(50)
 )
 def chat_completion_with_backoff(**kwargs):
     return openai.ChatCompletion.create(**kwargs)
@@ -46,10 +47,6 @@ def get_openai_json_response(
         model_name: str = "gpt-3.5-turbo",
         temperature: float = 0, 
         request_timeout: int = 30) -> str:
-    # Check that model_name is a valid model name before using it in the openai.ChatCompletion.create() call.
-    valid_models = ["gpt-3.5-turbo", "gpt-4"]
-    if model_name not in valid_models:
-        raise ValueError(f"{model_name} is not a valid OpenAI model name.")
     
     functions, function_call = format_function(parameters)
 

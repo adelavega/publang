@@ -9,7 +9,7 @@ from publang.extract.extract import search_extract
 from publang.extract.templates import ZERO_SHOT_MULTI_GROUP
 
 
-def _clean_gpt_demo_predictions(predictions):
+def clean_gpt_demo_predictions(predictions):
     # Clean known issues with GPT demographics predictions
 
     predictions = predictions.copy()
@@ -39,6 +39,7 @@ def _clean_gpt_demo_predictions(predictions):
 
 def extract_gpt_demographics(
         articles: List[Dict] = None,
+        output_path: str = None,
         embeddings: pd.DataFrame = None,
         api_key: str = None,
         embedding_model_name: str = 'text-embedding-ada-002', 
@@ -47,16 +48,17 @@ def extract_gpt_demographics(
         search_query: str = None,
         template: dict = None,
         extraction_model_name: str = 'gpt-3.5-turbo',
-        clean_preds: bool = True,
         num_workers: int = 1,
         embeddings_path: str = None,
-        predictions_path: str = None
         ) -> (pd.DataFrame, pd.DataFrame):
     """Extract participant demographics from a list of articles using OpenAI's API.
 
     Args:
         articles (list): List of articles. Each article is a dictionary with keys 'pmcid' and 'text'.
+        output_path (str): Path to csv file to save the predictions to. If file exists, the predictions will
+            be loaded from the file, and extraction will start from the last article in the file.
         embeddings_path (str): Path to parquet file to save the embeddings to. If None, the embeddings will 
+            not be saved
         api_key (str): OpenAI API key. If None, the key will be read from the OPENAI_API_KEY environment variable.
         embedding_model_name (str): Name of the OpenAI embedding model to use.
         min_tokens (int): Minimum number of tokens per chunk.
@@ -65,9 +67,7 @@ def extract_gpt_demographics(
         heuristic_strategy (str): Heuristic strategy to use for the extraction.
         template (dict): Template to use for the extraction (see templates.py).
         extraction_model_name (str): Name of the OpenAI model to use for the extraction.
-        clean_preds (bool): Whether to clean the predictions.
         num_workers (int): Number of workers to use for parallel processing.
-        predictions_path (str): Path to csv save the predictions to.
     Returns:
         pd.DataFrame: Dataframe containing the extracted values.
         pd.DataFrame: Dataframe containing the chunked embeddings for each article.
@@ -78,9 +78,12 @@ def extract_gpt_demographics(
     else:
         openai.api_key = os.environ.get('OPENAI_API_KEY', None)
 
+    unique_pmcids = set([a['pmcid'] for a in articles])
+
     embeddings = None
     if embeddings_path is not None and os.path.exists(embeddings_path):
-        embeddings = pd.read_parquet(embeddings_path)
+        # Load embeddings from file, but only for articles in input
+        embeddings = pd.read_parquet(embeddings_path, filters=[('pmcid', 'in', unique_pmcids)])
 
     if embeddings is None:
         if articles is None:
@@ -105,13 +108,8 @@ def extract_gpt_demographics(
     predictions = search_extract(
         embeddings, search_query, **template, 
         model_name=extraction_model_name, 
-        num_workers=num_workers
+        num_workers=num_workers,
+        output_path=output_path
         )
-    
-    if predictions_path is not None:
-        predictions.to_csv(predictions_path, index=False)
-    
-    if clean_preds:
-        predictions = _clean_gpt_demo_predictions(predictions)
 
     return predictions

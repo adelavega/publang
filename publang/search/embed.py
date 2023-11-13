@@ -27,7 +27,7 @@ from tenacity import (
 )
 def openaiembedding_with_backoff(input, model):
     return openai.Embedding.create(
-        input=model,
+        input=input,
         model=model
     )
 

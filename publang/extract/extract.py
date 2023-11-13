@@ -2,6 +2,8 @@
 
 import pandas as pd
 import tqdm 
+import os
+import openai
 from copy import deepcopy
 from typing import List, Dict, Union
 import concurrent.futures
@@ -99,27 +101,38 @@ def _extract_iteratively(
     """ Iteratively attempt to extract annotations from chunks in ranks_df until one succeeds. """
     for _, row in sub_df.iterrows():
         res = extract_from_text(row['content'], messages, parameters, model_name)
-        if res['groups']:
+        if res['groups'] and all([r['count'] > 0 if r['count'] is not None else False for r in res['groups']]):
             result = [
                 {**r, **row[['rank', 'start_char', 'end_char', 'pmcid']].to_dict()} for r in res['groups']
                 ]
             return result
-        
     return []
     
 
 def search_extract(
         embeddings_df, query, messages, parameters, model_name="gpt-3.5-turbo", 
-        num_workers=1):
+        output_path=None,num_workers=1):
     """ Search for query in embeddings_df and extract annotations from nearest chunks,
     using heuristic to narrow down search space if specified.
     """
 
+    predictions_df = None
+    if output_path is not None and os.path.exists(output_path):
+        predictions_df = pd.read_csv(output_path)
+
+        # Set difference between pmcids in embeddings_df and predictions_df
+        all_pmcids = set(embeddings_df.pmcid.unique())
+        pmcids = set(all_pmcids) - set(predictions_df.pmcid.unique())
+        embeddings_df = embeddings_df[embeddings_df.pmcid.isin(pmcids)]
+
+        print(f'{len(pmcids)} / {len(all_pmcids)} documents remaining.')
+
+
     # Search for query in chunks
     print('Computing distances...')
     ranks_df = get_chunk_query_distance(embeddings_df, query, num_workers=num_workers)
-    ranks_df.sort_values('distance', inplace=True)
-    
+    ranks_df.sort_values('rank', inplace=True)
+
     # For every document, try to extract annotations by distance until one succeeds
     print('Extracting annotations...')
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -130,8 +143,19 @@ def search_extract(
             ]
 
         results = []
-        for future in tqdm.tqdm(futures, total=len(ranks_df.pmcid.unique())):
-            results.extend(future.result())
-    results = pd.DataFrame(results)
+
+        try:
+            for future in tqdm.tqdm(futures, total=len(ranks_df.pmcid.unique())):
+                results.extend(future.result())
+        except openai.error.APIError or KeyboardInterrupt as e:
+            print(e)
+        finally:
+            # If there is an error, save the results so far
+            results = pd.DataFrame(results)
+            if predictions_df is not None:
+                results = pd.concat([predictions_df, results])
+
+            if output_path is not None:
+                results.to_csv(output_path, index=False)
 
     return results
