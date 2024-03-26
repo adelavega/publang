@@ -1,6 +1,6 @@
 import pytest
 import openai
-from publang.utils import openai_utils
+from publang.utils.oai import get_openai_embedding_response, get_openai_chatcompletion_response
 
 
 @pytest.mark.vcr()
@@ -13,7 +13,7 @@ def test_get_openai_chatcompletion_response():
         {"role": "user", "content": "Where was it played?"}
     ]
 
-    response = openai_utils.get_openai_chatcompletion_response(
+    response = get_openai_chatcompletion_response(
         messages=messages,
         model_name="gpt-3.5-turbo",
         temperature=0,
@@ -39,7 +39,7 @@ def test_get_openai_chatcompletion_function_calling():
                 }
             }
 
-    response = openai_utils.get_openai_chatcompletion_response(
+    response = get_openai_chatcompletion_response(
         messages=messages,
         output_schema=output_schema,
         model_name="gpt-3.5-turbo",
@@ -56,7 +56,7 @@ def test_get_openai_embedding_response():
     input_text = "Hello, world!"
     model = 'text-embedding-ada-002'
 
-    response = openai_utils.get_openai_embedding_response(
+    response = get_openai_embedding_response(
         input=input_text, model=model)
 
     assert isinstance(
