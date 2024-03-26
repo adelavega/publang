@@ -1,0 +1,104 @@
+interactions:
+- request:
+    body: '{"messages": [{"role": "user", "content": "How many fingers does a human
+      hand have?"}], "model": "gpt-3.5-turbo", "function_call": {"name": "extractData"},
+      "functions": [{"name": "extractData", "parameters": {"type": "object", "properties":
+      {"fingers": {"type": "integer", "description": "Number of fingers in a human
+      hand"}}}}], "temperature": 0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - DUMMY
+      connection:
+      - keep-alive
+      content-length:
+      - '347'
+      content-type:
+      - application/json
+      cookie:
+      - __cf_bm=MmN3JpFWqnOxQjPQl4OAXrpITsYG0oZ1LfClX7owDkc-1711492707-1.0.1.1-dS7IsxmReUlZdrrWuIFKuEMNYimWM82v6vV4159nZUuL7kjYO2Xqubu3DId7ElsJUQrEFEmK4b2O.njRT7k.0A;
+        _cfuvid=OFn01d2KOcEu8PizkWLuOOjUVmqT6LW1ghmXTYFjA8M-1711492707869-0.0.1.1-604800000
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.14.3
+      x-stainless-arch:
+      - x64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - Linux
+      x-stainless-package-version:
+      - 1.14.3
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.4
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA1yRT2vDMAzF7/kURuemNGnTrDkPNiiMDnZbR3BcJU3n2K6tsG4l3304yfpnF2P0
+        9H48SeeAMah3kDEQe06iMTJcpatD/COOG9O+PT/p1/b4otTpuC436/UXTLxDFwcU9OeaCt0YiVRr
+        NcjCIif01CiNosUqTmcPvdDoHUpvqwyF82kSUmsLHc6iOBmde10LdJCx94Axxs796zOqHZ4gY7PJ
+        X6VB53iFkF2aGAOrpa8Ad652xBXB5CoKrQiVj61aKW+EslXCp88Fl/IOyBgo3vRIPJHlgh458Rso
+        Y8Bt1TaoyKeG8xbKWlVo3RaypINLYzf+ussAUlfG6sL9y+P9tdvnFrnTyjMdaTOAPOSjX1R7NzsY
+        qxtDOelPVB64XA44uJ7mRhw10sTltZzGwRgP3LcjbPJhEmPrfmlQmnxeiKhI0sVSQNAFvwAAAP//
+        AwCxLQs0PgIAAA==
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 86aaa1907c422d2b-DFW
+      Cache-Control:
+      - no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 26 Mar 2024 22:38:28 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      access-control-allow-origin:
+      - '*'
+      alt-svc:
+      - h3=":443"; ma=86400
+      openai-model:
+      - gpt-3.5-turbo-0125
+      openai-organization:
+      - university-of-texas-at-austin-8nppuy
+      openai-processing-ms:
+      - '399'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-ratelimit-limit-requests:
+      - '5000'
+      x-ratelimit-limit-tokens:
+      - '160000'
+      x-ratelimit-remaining-requests:
+      - '4999'
+      x-ratelimit-remaining-tokens:
+      - '159973'
+      x-ratelimit-reset-requests:
+      - 12ms
+      x-ratelimit-reset-tokens:
+      - 10ms
+      x-request-id:
+      - req_1eb1d850ae18db5a7b15d39b0d83edd9
+    status:
+      code: 200
+      message: OK
+version: 1
