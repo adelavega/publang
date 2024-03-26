@@ -11,4 +11,5 @@ def test_format_string_with_variables():
 
     # Test case with multiple variables
     assert format_string_with_variables(
-        "Hello, {name}! My favorite color is {color}.", name="Bob", color="blue") == "Hello, Bob! My favorite color is blue."
+        "Hello, {name}! My favorite color is {color}.", 
+        name="Bob", color="blue") == "Hello, Bob! My favorite color is blue."

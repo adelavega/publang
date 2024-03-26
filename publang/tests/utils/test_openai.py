@@ -1,6 +1,9 @@
 import pytest
 import openai
-from publang.utils.oai import get_openai_embedding_response, get_openai_chatcompletion_response
+from publang.utils.oai import (
+    get_openai_embedding_response,
+    get_openai_chatcompletion_response
+)
 
 
 @pytest.mark.vcr()
@@ -8,9 +11,7 @@ def test_get_openai_chatcompletion_response():
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Who won the world series in 2020?"},
-        {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-        {"role": "user", "content": "Where was it played?"}
+        {"role": "user", "content": "Wherea was the world series in 2020?"}
     ]
 
     response = get_openai_chatcompletion_response(
@@ -22,6 +23,7 @@ def test_get_openai_chatcompletion_response():
     assert isinstance(response, str)
     assert len(response) > 0
     assert "Globe Life Field" in response
+
 
 @pytest.mark.vcr()
 def test_get_openai_chatcompletion_function_calling():
@@ -63,7 +65,7 @@ def test_get_openai_embedding_response():
         response,
         openai.types.create_embedding_response.CreateEmbeddingResponse
         )
-    
+
     assert response.model == "text-embedding-ada-002"
     assert response.object == "list"
 
