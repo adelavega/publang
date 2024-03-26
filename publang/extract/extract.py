@@ -1,15 +1,17 @@
 """ Provides a high-level API for LLMs for the purpose of infomation retrieval from documents and evaluation of the results."""
 
 import pandas as pd
-import tqdm 
+import tqdm
 import os
-import openai
 from copy import deepcopy
 from typing import List, Dict, Union
 import concurrent.futures
 
-from publang.extract.openai import get_openai_json_response, format_string_with_variables
+
+from publang.utils.oai import get_openai_chatcompletion_response
+from publang.utils.string import format_string_with_variables
 from publang.search import get_relevant_chunks, get_chunk_query_distance
+
 
 def extract_from_text(
         text: str, 
@@ -33,7 +35,7 @@ def extract_from_text(
     for message in messages:
         message['content'] = format_string_with_variables(message['content'], text=text)
 
-    data = get_openai_json_response(
+    data = get_openai_chatcompletion_response(
         messages,
         parameters=parameters,
         model_name=model_name

@@ -1,0 +1,105 @@
+interactions:
+- request:
+    body: '{"messages": [{"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Wherea was the world series in 2020?"}], "model":
+      "gpt-3.5-turbo", "temperature": 0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      authorization:
+      - DUMMY
+      connection:
+      - keep-alive
+      content-length:
+      - '190'
+      content-type:
+      - application/json
+      host:
+      - api.openai.com
+      user-agent:
+      - OpenAI/Python 1.14.3
+      x-stainless-arch:
+      - x64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - Linux
+      x-stainless-package-version:
+      - 1.14.3
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.4
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA1SQT2sCMRDF7/sphpxVdnXXrd5aSr0UKm2hlFIkmx13o9lMSEZUxO9e4l96yeH3
+        8h7vzSEBELoWUxCqlaw6Z/qTckLd6n02W2/181Odf/v5bF9U+KY281L0ooOqFSq+ugaKOmeQNdmz
+        rDxKxpialVmWT0bpOD8JHdVooq1x3B8Nij5vfEX9NBsWF2dLWmEQU/hJAAAOpzd2tDXuxBTS3pV0
+        GIJsUExvnwCEJxOJkCHowNKy6N1FRZbRnmp/tgjDdJjCF3lTwwd6jQG2MkCLpgbJMDNUIbzqJcKL
+        jkxbePRG24bJ9uATdzIMxCX8eGtlqHGeqrjAboy58aW2OrQLjzKQjQ0CkzvbjwnA72n95t8g4Tx1
+        jhdMa7QxcPhwjhP3e9/FrLyITCzNnedFcuknwj4wdoultg165/X5FEu3GFUqq4oyHyuRHJM/AAAA
+        //8DAHTGj+wUAgAA
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 86aaaa425de445f3-DFW
+      Cache-Control:
+      - no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 26 Mar 2024 22:44:24 GMT
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cf_bm=JrTwuXCwTzgq6XKD8nlODhjpj2lKWEPk5HGldaxzugc-1711493064-1.0.1.1-BHOet21rVb3OY2tomTqVlJFKcIOD1XhD26Z4mO0cz42BduxCrR1LGapdJ.yky2edHeSggsOMdhhM8SAC2DsK5A;
+        path=/; expires=Tue, 26-Mar-24 23:14:24 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=lMjABo83pHyDLjP0gesp1jMe8vypJNfPMwbRJMTqfIs-1711493064736-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Transfer-Encoding:
+      - chunked
+      access-control-allow-origin:
+      - '*'
+      alt-svc:
+      - h3=":443"; ma=86400
+      openai-model:
+      - gpt-3.5-turbo-0125
+      openai-organization:
+      - university-of-texas-at-austin-8nppuy
+      openai-processing-ms:
+      - '611'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-ratelimit-limit-requests:
+      - '5000'
+      x-ratelimit-limit-tokens:
+      - '160000'
+      x-ratelimit-remaining-requests:
+      - '4999'
+      x-ratelimit-remaining-tokens:
+      - '159966'
+      x-ratelimit-reset-requests:
+      - 12ms
+      x-ratelimit-reset-tokens:
+      - 12ms
+      x-request-id:
+      - req_1ffd231873ba6098260fcc2d0dc089de
+    status:
+      code: 200
+      message: OK
+version: 1

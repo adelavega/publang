@@ -1,4 +1,4 @@
-TEMPLATE = {
+ZERO_SHOT_MULTIGROUP = {
     'messages': [
         {
             "role": "user", 

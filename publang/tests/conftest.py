@@ -9,7 +9,7 @@ def get_data_folder():
 
 
 @pytest.fixture(scope="session")
-def get_test_docs(get_data_folder):
+def test_docs(get_data_folder):
     with open(get_data_folder / 'test_docs.json') as f:
         data = json.load(f)
     return data
