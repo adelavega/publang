@@ -10,23 +10,26 @@ from publang.utils.oai import get_openai_embedding
 
 
 def embed_pmc_article(
-        document: str, 
-        model_name: str = 'text-embedding-ada-002', 
-        min_tokens: int = 30, 
-        max_tokens: int = 4000, 
-        **kwargs) -> List[Dict[str, any]]:
-    """ Embed a PMC article using OpenAI's API. 
+    document: str,
+    model_name: str = "text-embedding-ada-002",
+    min_tokens: int = 30,
+    max_tokens: int = 4000,
+    **kwargs
+) -> List[Dict[str, any]]:
+    """Embed a PMC article using OpenAI's API.
     Split the article into chunks of min_tokens to max_tokens,
     and embed each chunk.
     """
 
-    split_doc = split_pmc_document(document, min_tokens=min_tokens, max_tokens=max_tokens)
+    split_doc = split_pmc_document(
+        document, min_tokens=min_tokens, max_tokens=max_tokens
+    )
 
     if split_doc:
         # Embed each chunk
         for chunk in split_doc:
-            res = get_openai_embedding(chunk['content'], model_name)
-            chunk['embedding'] = res
+            res = get_openai_embedding(chunk["content"], model_name)
+            chunk["embedding"] = res
             for key, value in kwargs.items():
                 chunk[key] = value
         return split_doc
@@ -35,23 +38,28 @@ def embed_pmc_article(
 
 
 def embed_pmc_articles(
-        articles: List[Dict],  # List of dicts with keys 'pmcid' and 'text'
-        model_name: str = 'text-embedding-ada-002', 
-        min_tokens: int = 30, 
-        max_tokens: int = 4000,
-        num_workers: int = 1
-        ) -> List[Dict[str, any]]:
-    """ Embed a list of PMC articles using OpenAI's API. 
+    articles: List[Dict],  # List of dicts with keys 'pmcid' and 'text'
+    model_name: str = "text-embedding-ada-002",
+    min_tokens: int = 30,
+    max_tokens: int = 4000,
+    num_workers: int = 1,
+) -> List[Dict[str, any]]:
+    """Embed a list of PMC articles using OpenAI's API.
     Split the article into chunks of min_tokens to max_tokens,
     and embed each chunk.
     """
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [
             executor.submit(
-                embed_pmc_article, art['text'], model_name, min_tokens, max_tokens, 
-                pmcid=art['pmcid']) 
+                embed_pmc_article,
+                art["text"],
+                model_name,
+                min_tokens,
+                max_tokens,
+                pmcid=art["pmcid"],
+            )
             for art in articles
-            ]
+        ]
 
         results = []
         for future in tqdm.tqdm(futures, total=len(articles)):
@@ -76,27 +84,33 @@ def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
     return ranks
 
 
-def query_embeddings(embeddings: List[List], query: str, compute_ranks=True) -> Tuple[List[float], List[int]]:
-    """Query a list of embeddings with a query string. Returns the distances and ranks of the embeddings. """
+def query_embeddings(
+    embeddings: List[List], query: str, compute_ranks=True
+) -> Tuple[List[float], List[int]]:
+    """Query a list of embeddings with a query string. Returns the distances and ranks of the embeddings."""
 
     embeddings = np.array(embeddings)
 
     query_embedding = get_openai_embedding(query)
-    distances = euclidean_distances(embeddings, np.array(query_embedding).reshape(1, -1), squared=True)
+    distances = euclidean_distances(
+        embeddings, np.array(query_embedding).reshape(1, -1), squared=True
+    )
 
     return distances, _rank_numbers(distances)
 
 
 def get_chunk_query_distance(embeddings_df, query):
     # For every document, get distance and rank between query and embeddings
-    distances, ranks = zip(*[
-        query_embeddings(sub_df['embedding'].tolist(), query) 
-        for pmcid, sub_df in embeddings_df.groupby('pmcid', sort=False)
-    ])
+    distances, ranks = zip(
+        *[
+            query_embeddings(sub_df["embedding"].tolist(), query)
+            for pmcid, sub_df in embeddings_df.groupby("pmcid", sort=False)
+        ]
+    )
 
     # Combine with meta-data into a df
-    ranks_df = embeddings_df[['pmcid', 'content', 'start_char', 'end_char']].copy()
-    ranks_df['distance'] = np.concatenate(distances)
-    ranks_df['rank'] = np.concatenate(ranks)
+    ranks_df = embeddings_df[["pmcid", "content", "start_char", "end_char"]].copy()
+    ranks_df["distance"] = np.concatenate(distances)
+    ranks_df["rank"] = np.concatenate(ranks)
 
     return ranks_df

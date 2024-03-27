@@ -6,10 +6,14 @@ def test_format_string_with_variables():
     assert format_string_with_variables("Hello, World!") == "Hello, World!"
 
     # Test case with one variable
-    assert format_string_with_variables(
-        "Hello, {name}!", name="Alice") == "Hello, Alice!"
+    assert (
+        format_string_with_variables("Hello, {name}!", name="Alice") == "Hello, Alice!"
+    )
 
     # Test case with multiple variables
-    assert format_string_with_variables(
-        "Hello, {name}! My favorite color is {color}.", 
-        name="Bob", color="blue") == "Hello, Bob! My favorite color is blue."
+    assert (
+        format_string_with_variables(
+            "Hello, {name}! My favorite color is {color}.", name="Bob", color="blue"
+        )
+        == "Hello, Bob! My favorite color is blue."
+    )

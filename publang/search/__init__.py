@@ -6,9 +6,9 @@ from publang.search.split import split_pmc_document, split_markdown
 from publang.search.match import get_relevant_chunks
 
 __all__ = [
-    'embed_pmc_articles',
-    'get_chunk_query_distance',
-    'split_pmc_document',
-    'split_markdown',
-    'get_relevant_chunks'
+    "embed_pmc_articles",
+    "get_chunk_query_distance",
+    "split_pmc_document",
+    "split_markdown",
+    "get_relevant_chunks",
 ]

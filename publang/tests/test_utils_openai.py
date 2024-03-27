@@ -1,16 +1,14 @@
 import pytest
 import openai
-from publang.utils.oai import (
-    get_openai_embedding,
-    get_openai_chatcompletion
-)
+from publang.utils.oai import get_openai_embedding, get_openai_chatcompletion
+
 
 @pytest.mark.vcr()
 def test_get_openai_chatcompletion():
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Wherea was the world series in 2020?"}
+        {"role": "user", "content": "Wherea was the world series in 2020?"},
     ]
 
     response = get_openai_chatcompletion(
@@ -26,19 +24,17 @@ def test_get_openai_chatcompletion():
 
 @pytest.mark.vcr()
 def test_get_openai_chatcompletion_function_calling():
-    messages = [
-        {"role": "user", "content": "How many fingers does a human hand have?"}
-    ]
+    messages = [{"role": "user", "content": "How many fingers does a human hand have?"}]
 
     output_schema = {
-                'type': 'object',
-                'properties': {
-                    'fingers': {
-                        'type': 'integer',
-                        'description': 'Number of fingers in a human hand'
-                    }
-                }
+        "type": "object",
+        "properties": {
+            "fingers": {
+                "type": "integer",
+                "description": "Number of fingers in a human hand",
             }
+        },
+    }
 
     response = get_openai_chatcompletion(
         messages=messages,
@@ -48,17 +44,16 @@ def test_get_openai_chatcompletion_function_calling():
     )
 
     assert isinstance(response, dict)
-    assert 'fingers' in response
-    assert response['fingers'] == 5
+    assert "fingers" in response
+    assert response["fingers"] == 5
 
 
 @pytest.mark.vcr()
 def test_get_openai_embedding():
     input_text = "Hello, world!"
-    model = 'text-embedding-ada-002'
+    model = "text-embedding-ada-002"
 
-    embedding = get_openai_embedding(
-        input_text, model_name=model)
+    embedding = get_openai_embedding(input_text, model_name=model)
 
     assert len(embedding) == 1536
     assert isinstance(embedding[0], float)
