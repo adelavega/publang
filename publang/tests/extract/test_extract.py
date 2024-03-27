@@ -10,7 +10,7 @@ from publang.extract.templates import ZERO_SHOT_MULTIGROUP
 def test_extract_from_text(test_docs):
     pmid, text = test_docs[0]
     result = extract_from_text(text, model_name='gpt-3.5-turbo', **ZERO_SHOT_MULTIGROUP)
-    
+
     assert isinstance(result, dict)
 
 
@@ -18,11 +18,11 @@ def test_extract_from_text(test_docs):
 # def test_extract_from_multiple():
 #     texts = ["Text 1", "Text 2", "Text 3"]
 #     messages = "Extract information from multiple texts."
-#     parameters = {"param1": "value1", "param2": "value2"}
+#     output_schema = {"param1": "value1", "param2": "value2"}
 #     model_name = "gpt-3.5-turbo"
 #     num_workers = 2
     
-#     result = extract_from_multiple(texts, messages, parameters, model_name, num_workers)
+#     result = extract_from_multiple(texts, messages, output_schema, model_name, num_workers)
     
 #     # Add assertions to validate the result
 
@@ -32,11 +32,11 @@ def test_extract_from_text(test_docs):
 #     embeddings_df = ...
 #     annotations_df = ...
 #     messages = "Extract annotations based on matching criteria."
-#     parameters = {"param1": "value1", "param2": "value2"}
+#     output_schema = {"param1": "value1", "param2": "value2"}
 #     model_name = "gpt-3.5-turbo"
 #     num_workers = 1
     
-#     result = extract_on_match(embeddings_df, annotations_df, messages, parameters, model_name, num_workers)
+#     result = extract_on_match(embeddings_df, annotations_df, messages, output_schema, model_name, num_workers)
     
 #     # Add assertions to validate the result
 
@@ -46,11 +46,11 @@ def test_extract_from_text(test_docs):
 #     embeddings_df = ...
 #     query = "search query"
 #     messages = "Search for query and extract annotations."
-#     parameters = {"param1": "value1", "param2": "value2"}
+#     output_schema = {"param1": "value1", "param2": "value2"}
 #     model_name = "gpt-3.5-turbo"
 #     output_path = "output.csv"
 #     num_workers = 2
     
-#     result = search_extract(embeddings_df, query, messages, parameters, model_name, output_path, num_workers)
+#     result = search_extract(embeddings_df, query, messages, output_schema, model_name, output_path, num_workers)
     
 #     # Add assertions to validate the result

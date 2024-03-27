@@ -1,20 +1,19 @@
 import pytest
 import openai
 from publang.utils.oai import (
-    get_openai_embedding_response,
-    get_openai_chatcompletion_response
+    get_openai_embedding,
+    get_openai_chatcompletion
 )
 
-
 @pytest.mark.vcr()
-def test_get_openai_chatcompletion_response():
+def test_get_openai_chatcompletion():
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Wherea was the world series in 2020?"}
     ]
 
-    response = get_openai_chatcompletion_response(
+    response = get_openai_chatcompletion(
         messages=messages,
         model_name="gpt-3.5-turbo",
         temperature=0,
@@ -41,7 +40,7 @@ def test_get_openai_chatcompletion_function_calling():
                 }
             }
 
-    response = get_openai_chatcompletion_response(
+    response = get_openai_chatcompletion(
         messages=messages,
         output_schema=output_schema,
         model_name="gpt-3.5-turbo",
@@ -54,22 +53,13 @@ def test_get_openai_chatcompletion_function_calling():
 
 
 @pytest.mark.vcr()
-def test_get_openai_embedding_response():
+def test_get_openai_embedding():
     input_text = "Hello, world!"
     model = 'text-embedding-ada-002'
 
-    response = get_openai_embedding_response(
-        input=input_text, model=model)
+    embedding = get_openai_embedding(
+        input_text, model_name=model)
 
-    assert isinstance(
-        response,
-        openai.types.create_embedding_response.CreateEmbeddingResponse
-        )
-
-    assert response.model == "text-embedding-ada-002"
-    assert response.object == "list"
-
-    assert len(response.data) > 0
-    assert len(response.data[0].embedding) == 1536
-    assert isinstance(response.data[0].embedding[0], float)
-    assert response.data[0].embedding[0] != 0.0
+    assert len(embedding) == 1536
+    assert isinstance(embedding[0], float)
+    assert embedding[0] != 0.0

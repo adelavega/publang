@@ -1,44 +1,12 @@
 """ Wrappers around OpenAI to make help embedding chunked documents """
 
-import openai
 import tqdm
 import numpy as np
 from publang.search.split import split_pmc_document
 from typing import Dict, List, Tuple
 import concurrent.futures
-from sklearn.metrics.pairwise import euclidean_distances 
-
-from tenacity import (
-    retry,
-    stop_after_attempt,
-    wait_random_exponential,
-    retry_if_exception_type
-)
-
-
-@retry(
-    retry=retry_if_exception_type((
-        openai.error.APIError, 
-        openai.error.APIConnectionError, 
-        openai.error.RateLimitError, 
-        openai.error.ServiceUnavailableError, 
-        openai.error.Timeout)), 
-    wait=wait_random_exponential(multiplier=1, max=60)
-)
-def openaiembedding_with_backoff(input, model):
-    return openai.Embedding.create(
-        input=input,
-        model=model
-    )
-
-
-def embed_text(text: str, model_name: str = 'text-embedding-ada-002') -> List[float]:
-    """ Embed a document using OpenAI's API """
-    # Return the embedding
-    response = openaiembedding_with_backoff(text, model_name)
-    embeddings = response['data'][0]['embedding']
-
-    return embeddings
+from sklearn.metrics.pairwise import euclidean_distances
+from publang.utils.oai import get_openai_embedding
 
 
 def embed_pmc_article(
@@ -57,13 +25,14 @@ def embed_pmc_article(
     if split_doc:
         # Embed each chunk
         for chunk in split_doc:
-            res = embed_text(chunk['content'], model_name)
+            res = get_openai_embedding(chunk['content'], model_name)
             chunk['embedding'] = res
             for key, value in kwargs.items():
                 chunk[key] = value
         return split_doc
     else:
         return []
+
 
 def embed_pmc_articles(
         articles: List[Dict],  # List of dicts with keys 'pmcid' and 'text'
@@ -90,6 +59,7 @@ def embed_pmc_articles(
 
     return results
 
+
 def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
     """Rank a list of numbers in descending order relative to their original index.
 
@@ -105,15 +75,17 @@ def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
         ranks[index] = rank
     return ranks
 
+
 def query_embeddings(embeddings: List[List], query: str, compute_ranks=True) -> Tuple[List[float], List[int]]:
     """Query a list of embeddings with a query string. Returns the distances and ranks of the embeddings. """
 
     embeddings = np.array(embeddings)
 
-    query_embedding = embed_text(query)
+    query_embedding = get_openai_embedding(query)
     distances = euclidean_distances(embeddings, np.array(query_embedding).reshape(1, -1), squared=True)
 
     return distances, _rank_numbers(distances)
+
 
 def get_chunk_query_distance(embeddings_df, query):
     # For every document, get distance and rank between query and embeddings

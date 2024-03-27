@@ -22,7 +22,7 @@ ZERO_SHOT_MULTI_GROUP = {
                 """
         }
     ],
-    'parameters':
+    'output_schema':
         {
             'type': 'object',
             'properties': {

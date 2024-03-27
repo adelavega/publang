@@ -41,11 +41,11 @@ def _format_function(output_schema):
     return functions, {"name": "extractData"}
 
 
-def get_openai_chatcompletion_response(
+def get_openai_chatcompletion(
         messages: List[Dict[str, str]],
-        output_schema: Dict[str, object]=None,
+        output_schema: Dict[str, object] = None,
         model_name: str = "gpt-3.5-turbo",
-        temperature: float = 0, 
+        temperature: float = 0,
         timeout: int = 30) -> str:
 
     kwargs = {
@@ -73,5 +73,9 @@ def get_openai_chatcompletion_response(
 
 
 @retry_openai
-def get_openai_embedding_response(input, model):
-    return client.embeddings.create(input=input, model=model)
+def get_openai_embedding(input: str, model_name: str = 'text-embedding-ada-002') -> List[float]:
+    resp = client.embeddings.create(input=input, model=model_name)
+
+    embedding = resp.data[0].embedding
+
+    return embedding

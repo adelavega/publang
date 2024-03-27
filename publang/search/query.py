@@ -1,9 +1,10 @@
 import numpy as np
 from typing import List, Tuple
-from publang.search.embed import embed_text
 from sklearn.metrics.pairwise import euclidean_distances, cosine_distances
 import concurrent.futures
 import tqdm
+
+from publang.utils.oai import get_openai_embedding
 
 def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
     """Rank a list of numbers in descending order relative to their original index.
@@ -29,7 +30,7 @@ def query_embeddings(
 
     embeddings = np.array(embeddings)
 
-    query_embedding = embed_text(query)
+    query_embedding = get_openai_embedding(query)
 
     if distance_metric == 'euclidean':
         distances = euclidean_distances(embeddings, np.array(query_embedding).reshape(1, -1), squared=True)
