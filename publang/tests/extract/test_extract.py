@@ -9,6 +9,7 @@ from publang.extract.templates import ZERO_SHOT_MULTIGROUP
 
 
 # Test extract_from_text function
+@pytest.mark.vcr()
 def test_extract_from_text(test_docs):
     pmid, text = test_docs[0]
     result = extract_from_text(text, model_name="gpt-3.5-turbo", **ZERO_SHOT_MULTIGROUP)

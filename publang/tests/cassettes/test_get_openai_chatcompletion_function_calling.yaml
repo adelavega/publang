@@ -37,17 +37,17 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA1yRwU7DMBBE7/mK1Z5b1KhtUnItFw7ckBAQFDnuNg04trE3UFTl35GTkLZcLGvH
-        8zQ7PkUAWO8wA5QHwbKxan6b2nSblE+b7eL+4fFl5b+PK/+ZlvbrefOFs+Aw5TtJ/nPdSNNYRVwb
-        PcjSkWAK1DiN42Qdb+JFLzRmRyrYKsvz1XyRxMvRcTC1JI8ZvEYAAKf+DNn0jo6YQe/vJw15LyrC
-        bHoEgM6oMEHhfe1ZaMbZWZRGM+kQV7dKXQj7VsuQupBCqSsgAGrR9Eg6shOS7wSLCygACle1DWkO
-        qfGUa4Ac97WuyPkcM1jnusPpfTfeumkPZSrrTOn/xQqI2h8KR8IbHdCejR1AAfLW99VeVYDWmcZy
-        weaDdAAmywGH5585i/HYJbJhoc7zdBmN+dD/eKamGLaxrp7Ki7roFwAA//8DAIa3e6ozAgAA
+        H4sIAAAAAAAAA1yRUWvCMBSF3/srLvdZh51TsW+CMNjbYAy2OUqW3tZqmoTkdnNI//tIW1vdSwj3
+        5Hyce3KOALDMMAGUe8Gysmq6Xtmnb+/yzfsiP8xe3n7sVsfPj8ft64YynASH+TqQ5IvrTprKKuLS
+        6E6WjgRToMarOF4u7hfrdStUJiMVbIXl6cN0toznvWNvSkkeE/iIAADO7Rmy6YxOmMBscplU5L0o
+        CJPhEQA6o8IEhfelZ6EZJ6MojWbSIa6ulboS8lrLkDqVQqkbIABqUbVIOrETkreCxRUUAIUr6oo0
+        h9R43mmAHealLsj5HSaw2OkGh/dNf2uGPZQprDNf/l+sgCj9PnUkvNEB7dnYDhQgn21f9U0FaJ2p
+        LKdsjqQDcDnvcDj+zCjGfZfIhoUa56t51OdD/+uZqrTbxrpyKC9qoj8AAAD//wMAonDVwjMCAAA=
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86b9cde6ab074779-DFW
+      - 86b9e1273ab06be4-DFW
       Cache-Control:
       - no-cache, must-revalidate
       Connection:
@@ -57,7 +57,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Mar 2024 18:50:11 GMT
+      - Thu, 28 Mar 2024 19:03:20 GMT
       Server:
       - cloudflare
       Transfer-Encoding:
@@ -71,7 +71,7 @@ interactions:
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '749'
+      - '1072'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
@@ -89,7 +89,7 @@ interactions:
       x-ratelimit-reset-tokens:
       - 20ms
       x-request-id:
-      - req_92202eb82009098a2c465facec55823f
+      - req_bdb30601fcc6abb0ba73c767025c302e
     status:
       code: 200
       message: OK
