@@ -16,6 +16,9 @@ interactions:
       - '190'
       content-type:
       - application/json
+      cookie:
+      - __cf_bm=KrqXaa5wyaptg1GbBh3ZlYQojPgZwAY_f.VUq7CXAwE-1711648106-1.0.1.1-0cCgQ_rSuI4rvrg_WqCpx30X2iVLEP7vTbe9KEEuxqSAkKDUriNpx1Ivhzl.sBpdssHp44Kx9RGO0q3lXS0Krw;
+        _cfuvid=1ThWubZx_Traa4nWO_e6jhIfsqBerSajDHsEFC7yiSI-1711648106671-0.0.1.1-604800000
       host:
       - api.openai.com
       user-agent:
@@ -39,18 +42,18 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA1SQT2sCMRDF7/sphpxVdnXXrd5aSr0UKm2hlFIkmx13o9lMSEZUxO9e4l96yeH3
-        8h7vzSEBELoWUxCqlaw6Z/qTckLd6n02W2/181Odf/v5bF9U+KY281L0ooOqFSq+ugaKOmeQNdmz
-        rDxKxpialVmWT0bpOD8JHdVooq1x3B8Nij5vfEX9NBsWF2dLWmEQU/hJAAAOpzd2tDXuxBTS3pV0
-        GIJsUExvnwCEJxOJkCHowNKy6N1FRZbRnmp/tgjDdJjCF3lTwwd6jQG2MkCLpgbJMDNUIbzqJcKL
-        jkxbePRG24bJ9uATdzIMxCX8eGtlqHGeqrjAboy58aW2OrQLjzKQjQ0CkzvbjwnA72n95t8g4Tx1
-        jhdMa7QxcPhwjhP3e9/FrLyITCzNnedFcuknwj4wdoultg165/X5FEu3GFUqq4oyHyuRHJM/AAAA
-        //8DAHTGj+wUAgAA
+        H4sIAAAAAAAAA1SQW2sCMRCF3/dXDHlW2fWub6WglpZSUCilFMlmx91oNhOSkWqL/73E9UJf8vCd
+        nMM585sACF2IKQhVSVa1M+3JiCbLxXa8GD6bcr57XWJvWT4dP95+Hmd90YoOyreo+OrqKKqdQdZk
+        G1l5lIwxNRtl2bA/ztLhWaipQBNtpeN2rzNo897n1E6z7uDirEgrDGIKnwkAwO/5jR1tgQcxhbR1
+        JTWGIEsU09snAOHJRCJkCDqwtCxad1GRZbTn2qsKoZt2U3gnbwpYotcY4FsGqNAUIBnmhnKEF71B
+        mOnItIUHb7QtmWwLVniQoSMu4adbK0Ol85THBXZvzI1vtNWhWnuUgWxsEJhcYz8lAF/n9ft/g4Tz
+        VDteM+3QxsDuuIkT93vfxWx0EZlYmjvvD5JLPxGOgbFeb7Qt0Tuvm1Ns3LqXqywfjPpDJZJT8gcA
+        AP//AwCrTwGnFAIAAA==
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86aaaa425de445f3-DFW
+      - 86b9737af9064674-DFW
       Cache-Control:
       - no-cache, must-revalidate
       Connection:
@@ -60,15 +63,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 26 Mar 2024 22:44:24 GMT
+      - Thu, 28 Mar 2024 17:48:27 GMT
       Server:
       - cloudflare
-      Set-Cookie:
-      - __cf_bm=JrTwuXCwTzgq6XKD8nlODhjpj2lKWEPk5HGldaxzugc-1711493064-1.0.1.1-BHOet21rVb3OY2tomTqVlJFKcIOD1XhD26Z4mO0cz42BduxCrR1LGapdJ.yky2edHeSggsOMdhhM8SAC2DsK5A;
-        path=/; expires=Tue, 26-Mar-24 23:14:24 GMT; domain=.api.openai.com; HttpOnly;
-        Secure; SameSite=None
-      - _cfuvid=lMjABo83pHyDLjP0gesp1jMe8vypJNfPMwbRJMTqfIs-1711493064736-0.0.1.1-604800000;
-        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
       Transfer-Encoding:
       - chunked
       access-control-allow-origin:
@@ -80,7 +77,7 @@ interactions:
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '611'
+      - '348'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
@@ -98,7 +95,7 @@ interactions:
       x-ratelimit-reset-tokens:
       - 12ms
       x-request-id:
-      - req_1ffd231873ba6098260fcc2d0dc089de
+      - req_000fa9206e90b8495616d6e10244a07e
     status:
       code: 200
       message: OK

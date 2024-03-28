@@ -1,5 +1,4 @@
 import pytest
-import openai
 from publang.utils.oai import get_openai_embedding, get_openai_chatcompletion
 
 
@@ -40,7 +39,6 @@ def test_get_openai_chatcompletion_function_calling():
         messages=messages,
         output_schema=output_schema,
         model_name="gpt-3.5-turbo",
-        temperature=0,
     )
 
     assert isinstance(response, dict)
