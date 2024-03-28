@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 
 if not os.environ.get("OPENAI_API_KEY", None):
-    os.environ["OPENAI_API_KEY"] = ""
+    os.environ["OPENAI_API_KEY"] = "55kjsdfkjd09"
 
 @pytest.fixture(scope="session")
 def get_data_folder():

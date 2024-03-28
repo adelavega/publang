@@ -3,6 +3,7 @@
 import openai
 import json
 from typing import List, Dict
+import os
 
 from tenacity import (
     retry,
@@ -11,25 +12,28 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-client = openai.OpenAI()
 
-retry_openai = retry(
-    retry=retry_if_exception_type(
-        (
-            openai.APIError,
-            openai.APIConnectionError,
-            openai.RateLimitError,
-            openai.Timeout,
-        )
-    ),
-    wait=wait_random_exponential(multiplier=1, max=100),
-    stop=stop_after_attempt(50),
-)
+def reexecutor(func, *args, **kwargs):
+    return func(*args, **kwargs)
 
 
-@retry_openai
-def _chat_completion_with_backoff(**kwargs):
-    return client.chat.completions.create(**kwargs)
+retry_attempts = int(os.getenv("PUBLANG_RETRY_ATTEMPTS", 50))
+
+if retry_attempts > 1:
+    retry_openai = retry(
+        retry=retry_if_exception_type(
+            (
+                openai.APIError,
+                openai.APIConnectionError,
+                openai.RateLimitError,
+                openai.Timeout,
+            )
+        ),
+        wait=wait_random_exponential(multiplier=1, max=100),
+        stop=stop_after_attempt(retry_attempts),
+    )
+
+    reexecutor = retry_openai(reexecutor)
 
 
 def _format_function(output_schema):
@@ -37,6 +41,9 @@ def _format_function(output_schema):
     functions = [{"name": "extractData", "parameters": output_schema}]
 
     return functions, {"name": "extractData"}
+
+
+client = openai.OpenAI()
 
 
 def get_openai_chatcompletion(
@@ -58,7 +65,7 @@ def get_openai_chatcompletion(
         kwargs["functions"] = functions
         kwargs["function_call"] = function_call
 
-    completion = _chat_completion_with_backoff(**kwargs)
+    completion = reexecutor(client.chat.completions.create, **kwargs)
 
     message = completion.choices[0].message
 
@@ -71,11 +78,9 @@ def get_openai_chatcompletion(
     return response
 
 
-@retry_openai
-def get_openai_embedding(
-    input: str, model_name: str = "text-embedding-ada-002"
-) -> List[float]:
-    resp = client.embeddings.create(input=input, model=model_name)
+def get_openai_embedding(input: str, 
+                         model_name: str = "text-embedding-ada-002") -> List[float]:
+    resp = reexecutor(client.embeddings.create, input=input, model=model_name)
 
     embedding = resp.data[0].embedding
 
