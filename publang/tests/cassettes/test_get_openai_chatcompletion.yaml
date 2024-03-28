@@ -8,21 +8,14 @@ interactions:
       - application/json
       accept-encoding:
       - gzip, deflate
-      authorization:
-      - DUMMY
       connection:
       - keep-alive
       content-length:
       - '190'
       content-type:
       - application/json
-      cookie:
-      - __cf_bm=KrqXaa5wyaptg1GbBh3ZlYQojPgZwAY_f.VUq7CXAwE-1711648106-1.0.1.1-0cCgQ_rSuI4rvrg_WqCpx30X2iVLEP7vTbe9KEEuxqSAkKDUriNpx1Ivhzl.sBpdssHp44Kx9RGO0q3lXS0Krw;
-        _cfuvid=1ThWubZx_Traa4nWO_e6jhIfsqBerSajDHsEFC7yiSI-1711648106671-0.0.1.1-604800000
       host:
       - api.openai.com
-      user-agent:
-      - OpenAI/Python 1.14.3
       x-stainless-arch:
       - x64
       x-stainless-async:
@@ -42,18 +35,18 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA1SQW2sCMRCF3/dXDHlW2fWub6WglpZSUCilFMlmx91oNhOSkWqL/73E9UJf8vCd
-        nMM585sACF2IKQhVSVa1M+3JiCbLxXa8GD6bcr57XWJvWT4dP95+Hmd90YoOyreo+OrqKKqdQdZk
-        G1l5lIwxNRtl2bA/ztLhWaipQBNtpeN2rzNo897n1E6z7uDirEgrDGIKnwkAwO/5jR1tgQcxhbR1
-        JTWGIEsU09snAOHJRCJkCDqwtCxad1GRZbTn2qsKoZt2U3gnbwpYotcY4FsGqNAUIBnmhnKEF71B
-        mOnItIUHb7QtmWwLVniQoSMu4adbK0Ol85THBXZvzI1vtNWhWnuUgWxsEJhcYz8lAF/n9ft/g4Tz
-        VDteM+3QxsDuuIkT93vfxWx0EZlYmjvvD5JLPxGOgbFeb7Qt0Tuvm1Ns3LqXqywfjPpDJZJT8gcA
-        AP//AwCrTwGnFAIAAA==
+        H4sIAAAAAAAAA1SQ3UvDMBTF3/tXXPK8jXZbV92bgh+4IYgTEZGRprdtZpobkjucyv53yT7xJQ+/
+        k3M45/4mAEJXYgpCtZJV50z/snDF9fXqafEzw2qGbzW+rOabhxspF4/3ohcdVK5Q8dE1UNQ5g6zJ
+        7mXlUTLG1KzIskmeXaSXO6GjCk20NY77o0He57UvqZ9mw/zgbEkrDGIK7wkAwO/ujR1thRsxhbR3
+        JB2GIBsU09MnAOHJRCJkCDqwtCx6Z1GRZbS72osWYZgOU3glbyp4Rq8xwJcM0KKpQDLcGSoR5rpG
+        uNWRaQtX3mjbMNkeLHAjw0AcwrenVoYa56mMC+zamBOvtdWhXXqUgWxsEJjc3r5NAD5269f/Bgnn
+        qXO8ZPpEGwOHF/s4cb73WcyKg8jE0pz5OE8O/UT4Dozdsta2Qe+83p+idstRqbIyL8YTJZJt8gcA
+        AP//AwAZ1PmvFAIAAA==
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86b9737af9064674-DFW
+      - 86b9cde07bde4779-DFW
       Cache-Control:
       - no-cache, must-revalidate
       Connection:
@@ -63,7 +56,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Mar 2024 17:48:27 GMT
+      - Thu, 28 Mar 2024 18:50:10 GMT
       Server:
       - cloudflare
       Transfer-Encoding:
@@ -77,7 +70,7 @@ interactions:
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '348'
+      - '669'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
@@ -95,7 +88,7 @@ interactions:
       x-ratelimit-reset-tokens:
       - 12ms
       x-request-id:
-      - req_000fa9206e90b8495616d6e10244a07e
+      - req_a73faf5cf91da9f696939baf2fd2fff6
     status:
       code: 200
       message: OK

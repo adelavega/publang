@@ -38,7 +38,7 @@ def test_get_openai_chatcompletion_function_calling():
     response = get_openai_chatcompletion(
         messages=messages,
         output_schema=output_schema,
-        model_name="gpt-3.5-turbo",
+        model_name="gpt-4",
     )
 
     assert isinstance(response, dict)

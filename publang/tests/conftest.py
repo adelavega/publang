@@ -21,5 +21,5 @@ def test_docs(get_data_folder):
 @pytest.fixture(scope="module")
 def vcr_config():
     return {
-        "filter_headers": [("authorization", "DUMMY")],
+        "filter_headers": ['authorization', 'cookie', 'user-agent'],
     }

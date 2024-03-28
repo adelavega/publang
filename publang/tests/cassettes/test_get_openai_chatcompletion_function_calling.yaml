@@ -1,30 +1,23 @@
 interactions:
 - request:
     body: '{"messages": [{"role": "user", "content": "How many fingers does a human
-      hand have?"}], "model": "gpt-3.5-turbo", "function_call": {"name": "extractData"},
-      "functions": [{"name": "extractData", "parameters": {"type": "object", "properties":
-      {"fingers": {"type": "integer", "description": "Number of fingers in a human
-      hand"}}}}], "temperature": 0}'
+      hand have?"}], "model": "gpt-4", "function_call": {"name": "extractData"}, "functions":
+      [{"name": "extractData", "parameters": {"type": "object", "properties": {"fingers":
+      {"type": "integer", "description": "Number of fingers in a human hand"}}}}],
+      "temperature": 0}'
     headers:
       accept:
       - application/json
       accept-encoding:
       - gzip, deflate
-      authorization:
-      - DUMMY
       connection:
       - keep-alive
       content-length:
-      - '347'
+      - '339'
       content-type:
       - application/json
-      cookie:
-      - __cf_bm=KrqXaa5wyaptg1GbBh3ZlYQojPgZwAY_f.VUq7CXAwE-1711648106-1.0.1.1-0cCgQ_rSuI4rvrg_WqCpx30X2iVLEP7vTbe9KEEuxqSAkKDUriNpx1Ivhzl.sBpdssHp44Kx9RGO0q3lXS0Krw;
-        _cfuvid=1ThWubZx_Traa4nWO_e6jhIfsqBerSajDHsEFC7yiSI-1711648106671-0.0.1.1-604800000
       host:
       - api.openai.com
-      user-agent:
-      - OpenAI/Python 1.14.3
       x-stainless-arch:
       - x64
       x-stainless-async:
@@ -44,18 +37,17 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA1yRy27CMBBF9/kKa9YEESAJZNfHqt20olIrlSpyjBNC/ao9kaAo/145Ca9uLGvu
-        3KM7M8eAEKg3kBFgW4pMGhEuU718ezi87D7iOxatVu9P988/pf1dHF6bBYy8Qxc7zvDkGjMtjeBY
-        a9XLzHKK3FOjNIqS+SKapJ0g9YYLb6sMhrNxHGJjCx1Oomk8OLe6ZtxBRj4DQgg5dq/PqDZ8DxmZ
-        jE4VyZ2jFYfs3EQIWC18BahztUOqEEYXkWmFXPnYqhHiSigbxXz6nFEhboCEgKKyQ/I9WsrwkSK9
-        ghIC1FaN5Ap9ajiuoaxVxa1bQxa3cG5sh197HkDoylhduH95vL9229xy6rTyTIfa9CAP+eoW1dzM
-        DsZqaTBH/c2VByZJj4PLaa7EQUONVFzK6TQY4oE7OOQy7ycxtu6WBqXJZwWLijidJwyCNvgDAAD/
-        /wMAwhrMST4CAAA=
+        H4sIAAAAAAAAA1yRwU7DMBBE7/mK1Z5b1KhtUnItFw7ckBAQFDnuNg04trE3UFTl35GTkLZcLGvH
+        8zQ7PkUAWO8wA5QHwbKxan6b2nSblE+b7eL+4fFl5b+PK/+ZlvbrefOFs+Aw5TtJ/nPdSNNYRVwb
+        PcjSkWAK1DiN42Qdb+JFLzRmRyrYKsvz1XyRxMvRcTC1JI8ZvEYAAKf+DNn0jo6YQe/vJw15LyrC
+        bHoEgM6oMEHhfe1ZaMbZWZRGM+kQV7dKXQj7VsuQupBCqSsgAGrR9Eg6shOS7wSLCygACle1DWkO
+        qfGUa4Ac97WuyPkcM1jnusPpfTfeumkPZSrrTOn/xQqI2h8KR8IbHdCejR1AAfLW99VeVYDWmcZy
+        weaDdAAmywGH5585i/HYJbJhoc7zdBmN+dD/eKamGLaxrp7Ki7roFwAA//8DAIa3e6ozAgAA
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86b9737ddd334674-DFW
+      - 86b9cde6ab074779-DFW
       Cache-Control:
       - no-cache, must-revalidate
       Connection:
@@ -65,7 +57,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Mar 2024 17:48:27 GMT
+      - Thu, 28 Mar 2024 18:50:11 GMT
       Server:
       - cloudflare
       Transfer-Encoding:
@@ -75,11 +67,11 @@ interactions:
       alt-svc:
       - h3=":443"; ma=86400
       openai-model:
-      - gpt-3.5-turbo-0125
+      - gpt-4-0613
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '294'
+      - '749'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
@@ -87,17 +79,17 @@ interactions:
       x-ratelimit-limit-requests:
       - '5000'
       x-ratelimit-limit-tokens:
-      - '160000'
+      - '80000'
       x-ratelimit-remaining-requests:
       - '4999'
       x-ratelimit-remaining-tokens:
-      - '159973'
+      - '79973'
       x-ratelimit-reset-requests:
       - 12ms
       x-ratelimit-reset-tokens:
-      - 10ms
+      - 20ms
       x-request-id:
-      - req_84f50827a485642fbf55deec579d5c18
+      - req_92202eb82009098a2c465facec55823f
     status:
       code: 200
       message: OK
