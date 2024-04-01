@@ -2,18 +2,19 @@
 
 import tqdm
 import numpy as np
-from publang.search.split import split_pmc_document
-from typing import Dict, List, Tuple
+from publang.utils.split import split_pmc_document
+from typing import Dict, List, Tuple, Union
 import concurrent.futures
 from sklearn.metrics.pairwise import euclidean_distances
 from publang.utils.oai import get_openai_embedding
 
 
-def embed_pmc_article(
-    document: str,
+def embed_pmc_articles(
+    articles: Union[str, List[str]],
     model_name: str = "text-embedding-ada-002",
     min_tokens: int = 30,
     max_tokens: int = 4000,
+    num_workers: int = 1,
     **kwargs
 ) -> List[Dict[str, any]]:
     """Embed a PMC article using OpenAI's API.
@@ -21,44 +22,36 @@ def embed_pmc_article(
     and embed each chunk.
     """
 
-    split_doc = split_pmc_document(
-        document, min_tokens=min_tokens, max_tokens=max_tokens
-    )
+    if isinstance(articles, str):
+        articles = [articles]
 
-    if split_doc:
-        # Embed each chunk
-        for chunk in split_doc:
-            res = get_openai_embedding(chunk["content"], model_name)
-            chunk["embedding"] = res
-            for key, value in kwargs.items():
-                chunk[key] = value
-        return split_doc
-    else:
-        return []
+    def _split_embed(article, model_name, min_tokens, max_tokens, **kwargs):
+        split_doc = split_pmc_document(
+            article, min_tokens=min_tokens, max_tokens=max_tokens
+        )
 
+        if split_doc:
+            # Embed each chunk
+            for chunk in split_doc:
+                res = get_openai_embedding(chunk["content"], model_name)
+                chunk["embedding"] = res
+                for key, value in kwargs.items():
+                    chunk[key] = value
+            return split_doc
+        else:
+            return []
 
-def embed_pmc_articles(
-    articles: List[Dict],  # List of dicts with keys 'pmcid' and 'text'
-    model_name: str = "text-embedding-ada-002",
-    min_tokens: int = 30,
-    max_tokens: int = 4000,
-    num_workers: int = 1,
-) -> List[Dict[str, any]]:
-    """Embed a list of PMC articles using OpenAI's API.
-    Split the article into chunks of min_tokens to max_tokens,
-    and embed each chunk.
-    """
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [
             executor.submit(
-                embed_pmc_article,
-                art["text"],
+                _split_embed,
+                article,
                 model_name,
                 min_tokens,
                 max_tokens,
-                pmcid=art["pmcid"],
+                **kwargs,
             )
-            for art in articles
+            for article in articles
         ]
 
         results = []

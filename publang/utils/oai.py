@@ -49,7 +49,7 @@ client = openai.OpenAI()
 def get_openai_chatcompletion(
     messages: List[Dict[str, str]],
     output_schema: Dict[str, object] = None,
-    model_name: str = "gpt-3.5-turbo",
+    model_name: str = "gpt-4-0125-preview",
     temperature: float = 0,
     timeout: int = 30,
 ) -> str:

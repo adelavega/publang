@@ -7,7 +7,7 @@ def test_get_openai_chatcompletion():
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Wherea was the world series in 2020?"},
+        {"role": "user", "content": "Where was the world series in 2020?"},
     ]
 
     response = get_openai_chatcompletion(

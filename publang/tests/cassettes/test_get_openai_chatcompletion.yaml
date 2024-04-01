@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"messages": [{"role": "system", "content": "You are a helpful assistant."},
-      {"role": "user", "content": "Wherea was the world series in 2020?"}], "model":
+      {"role": "user", "content": "Where was the world series in 2020?"}], "model":
       "gpt-3.5-turbo", "temperature": 0}'
     headers:
       accept:
@@ -11,7 +11,7 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '190'
+      - '189'
       content-type:
       - application/json
       host:
@@ -35,18 +35,18 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA1SQUWvCMBSF3/srLnlWaau10zdhTJh7GEwYbAxJ02sbl+aG5Lo5hv99RKuylzx8
-        J+dwzv1NAISuxRyEaiWrzpnhrHSP+1QW94v116R9ni6WcvW2UrtyOkYrBtFB1Q4VX1wjRZ0zyJp6
-        WXmUjDE1K7NsWuTF7O4kdFSjibbG8XA8Koa89xUN0ywvemdLWmEQc3hPAAB+T2/saGs8iDmkgwvp
-        MATZoJhfPwEITyYSIUPQgaVlMbiJiiyjPdVetwh5mqfwSt7U8IJeY4BvGaBFU4NkWBqqEJ70FuFB
-        R6YtLLzRtmGyA1jjQYaR6MOP11aGGuepigvs3pgr32qrQ7vxKAPZ2CAwubP9mAB8nNbv/w0SzlPn
-        eMP0iTYG5nfnOHG7903Myl5kYmlufFIkfT8RfgJjt9lq26B3Xp9PsXWbcaWyqignUyWSY/IHAAD/
-        /wMAHSwqbxQCAAA=
+        H4sIAAAAAAAAA1SQS2/CMBCE7/kVK58BJQHK49YDrYRohVSqVq0q5CSbxMXxWvbSghD/vXJ4qRcf
+        vvGMZvYQAQhViCmIvJacN1Z3J5N51d+80nvxNLPz8ud5sP9Y5mo5m8WLuegEB2XfmPPF1cupsRpZ
+        kTnJuUPJGFKTUZLG8egumbRCQwXqYKssd/u9YZe3LqNunKTDs7MmlaMXU/iMAAAO7Rs6mgJ3Ygpx
+        50Ia9F5WKKbXTwDCkQ5ESO+VZ2lYdG5iTobRtLVXNUIapzG8kdMFvKBT6OFXeqhRFyAZHjVlCAtV
+        IjyowJSBe6eVqZhMB1a4k74nzuHHaytNlXWUhQVmq/WVl8ooX68dSk8mNPBM9mQ/RgBf7frtv0HC
+        Omosr5k2aEJgOjrFidu9b2JyEZlY6hsfDKJzP+H3nrFZl8pU6KxTp1OUdp2l46w/KUs5FtEx+gMA
+        AP//AwAqNlZJFAIAAA==
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86b9e12128a56be4-DFW
+      - 86dbbca42d37ea06-DFW
       Cache-Control:
       - no-cache, must-revalidate
       Connection:
@@ -56,7 +56,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Mar 2024 19:03:18 GMT
+      - Mon, 01 Apr 2024 21:40:19 GMT
       Server:
       - cloudflare
       Transfer-Encoding:
@@ -70,7 +70,7 @@ interactions:
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '635'
+      - '456'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
@@ -88,7 +88,7 @@ interactions:
       x-ratelimit-reset-tokens:
       - 12ms
       x-request-id:
-      - req_0466ec2e6fe8a7ae854b773c20ce7072
+      - req_1edc05ef266ee661ca8e8084c3794630
     status:
       code: 200
       message: OK

@@ -4,7 +4,10 @@ import warnings
 
 
 def split_lines(text: str, max_tokens: int = 100) -> List[str]:
-    """Join strings to form largest possible strings that are less than max_tokens."""
+    """Join strings to form largest possible strings that are less than max_tokens.
+    
+    ## TODO: Define tokens as not just chars, and force split if a line is too long. 
+    """
 
     strings = text.splitlines()
     if text[-1] == "\n":
@@ -112,7 +115,7 @@ def split_pmc_document(
     text: str,
     delimiters: List[str] = ["# ", "## ", "### "],
     min_tokens: int = 20,
-    max_tokens: int = 4000,
+    max_tokens: int = None,
 ) -> List[str]:
     """Split PMC document text into chunks based on delimiters, and split by top level sections.
 

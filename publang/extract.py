@@ -13,10 +13,11 @@ from publang.search import get_relevant_chunks
 
 
 def extract_from_text(
-    text: str,
+    texts: Union[str, List[str]],
     messages: str,
     output_schema: Dict[str, object],
     model_name: str = "gpt-3.5-turbo",
+    num_workers: int = 1,
 ) -> Dict[str, str]:
     """Extracts information from a text sample using an OpenAI LLM.
 
@@ -26,50 +27,36 @@ def extract_from_text(
         model_name: A string containing the name of the LLM to be used for the extraction.
     """
 
-    # Encode text to ascii
-    text = text.encode("ascii", "ignore").decode()
+    if isinstance(texts, str):
+        texts = [texts]
 
-    messages = deepcopy(messages)
+    def _extract(text, messages, output_schema, model_name):
+        # Encode text to ascii
+        text = text.encode("ascii", "ignore").decode()
 
-    # Format the message with the text
-    for message in messages:
-        message["content"] = format_string_with_variables(message["content"], text=text)
+        messages = deepcopy(messages)
 
-    data = get_openai_chatcompletion(
-        messages, output_schema=output_schema, model_name=model_name
-    )
+        # Format the message with the text
+        for message in messages:
+            message["content"] = format_string_with_variables(message["content"], text=text)
 
-    return data
+        data = get_openai_chatcompletion(
+            messages, output_schema=output_schema, model_name=model_name
+        )
 
-
-def extract_from_multiple(
-    texts: List[str],
-    messages: str,
-    output_schema: Dict[str, object],
-    model_name: str = "gpt-3.5-turbo",
-    num_workers: int = 1,
-) -> Union[List[Dict[str, str]], pd.DataFrame]:
-    """Extracts information from multiple text samples using an OpenAI LLM.
-
-    Args:
-        texts: A list of strings containing the text samples.
-        template: A dictionary containing the template for the prompt and the expected keys in the completion.
-        model_name: A string containing the name of the LLM to be used for the extraction.
-        return_type: A string specifying the type of the returned object. Can be either "pandas" or "list".
-        num_workers: An integer specifying the number of workers to use for parallel processing.
-    """
+        return data
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [
             executor.submit(
-                extract_from_text, text, messages, output_schema, model_name
+                _extract, text, messages, output_schema, model_name
             )
             for text in texts
         ]
 
-        results = []
-        for future in tqdm.tqdm(futures, total=len(texts)):
-            results.append(future.result())
+    results = []
+    for future in tqdm.tqdm(futures, total=len(texts)):
+        results.append(future.result())
 
     return results
 
@@ -88,7 +75,7 @@ def extract_on_match(
 
     sections = get_relevant_chunks(embeddings_df, annotations_df)
 
-    res = extract_from_multiple(
+    res = extract_from_text(
         sections.content.to_list(),
         messages,
         output_schema,
