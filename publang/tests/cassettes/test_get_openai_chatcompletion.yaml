@@ -1,0 +1,95 @@
+interactions:
+- request:
+    body: '{"messages": [{"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Where was the world series in 2020?"}], "model":
+      "gpt-3.5-turbo", "temperature": 0}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '189'
+      content-type:
+      - application/json
+      host:
+      - api.openai.com
+      x-stainless-arch:
+      - x64
+      x-stainless-async:
+      - 'false'
+      x-stainless-lang:
+      - python
+      x-stainless-os:
+      - Linux
+      x-stainless-package-version:
+      - 1.14.3
+      x-stainless-runtime:
+      - CPython
+      x-stainless-runtime-version:
+      - 3.11.4
+    method: POST
+    uri: https://api.openai.com/v1/chat/completions
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA1SQS2/CMBCE7/kVK58BJQHK49YDrYRohVSqVq0q5CSbxMXxWvbSghD/vXJ4qRcf
+        vvGMZvYQAQhViCmIvJacN1Z3J5N51d+80nvxNLPz8ud5sP9Y5mo5m8WLuegEB2XfmPPF1cupsRpZ
+        kTnJuUPJGFKTUZLG8egumbRCQwXqYKssd/u9YZe3LqNunKTDs7MmlaMXU/iMAAAO7Rs6mgJ3Ygpx
+        50Ia9F5WKKbXTwDCkQ5ESO+VZ2lYdG5iTobRtLVXNUIapzG8kdMFvKBT6OFXeqhRFyAZHjVlCAtV
+        IjyowJSBe6eVqZhMB1a4k74nzuHHaytNlXWUhQVmq/WVl8ooX68dSk8mNPBM9mQ/RgBf7frtv0HC
+        Omosr5k2aEJgOjrFidu9b2JyEZlY6hsfDKJzP+H3nrFZl8pU6KxTp1OUdp2l46w/KUs5FtEx+gMA
+        AP//AwAqNlZJFAIAAA==
+    headers:
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 86dbbca42d37ea06-DFW
+      Cache-Control:
+      - no-cache, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Apr 2024 21:40:19 GMT
+      Server:
+      - cloudflare
+      Transfer-Encoding:
+      - chunked
+      access-control-allow-origin:
+      - '*'
+      alt-svc:
+      - h3=":443"; ma=86400
+      openai-model:
+      - gpt-3.5-turbo-0125
+      openai-organization:
+      - university-of-texas-at-austin-8nppuy
+      openai-processing-ms:
+      - '456'
+      openai-version:
+      - '2020-10-01'
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains
+      x-ratelimit-limit-requests:
+      - '5000'
+      x-ratelimit-limit-tokens:
+      - '160000'
+      x-ratelimit-remaining-requests:
+      - '4999'
+      x-ratelimit-remaining-tokens:
+      - '159966'
+      x-ratelimit-reset-requests:
+      - 12ms
+      x-ratelimit-reset-tokens:
+      - 12ms
+      x-request-id:
+      - req_1edc05ef266ee661ca8e8084c3794630
+    status:
+      code: 200
+      message: OK
+version: 1
