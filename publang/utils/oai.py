@@ -43,9 +43,6 @@ def _format_function(output_schema):
     return functions, {"name": "extractData"}
 
 
-client = openai.OpenAI()
-
-
 def get_openai_chatcompletion(
     messages: List[Dict[str, str]],
     output_schema: Dict[str, object] = None,
@@ -65,6 +62,7 @@ def get_openai_chatcompletion(
         kwargs["functions"] = functions
         kwargs["function_call"] = function_call
 
+    client = openai.OpenAI()
     completion = reexecutor(client.chat.completions.create, **kwargs)
 
     message = completion.choices[0].message
@@ -80,6 +78,7 @@ def get_openai_chatcompletion(
 
 def get_openai_embedding(input: str, 
                          model_name: str = "text-embedding-ada-002") -> List[float]:
+    client = openai.OpenAI()
     resp = reexecutor(client.embeddings.create, input=input, model=model_name)
 
     embedding = resp.data[0].embedding
