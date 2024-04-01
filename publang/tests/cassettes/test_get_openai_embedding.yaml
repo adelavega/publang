@@ -15,20 +15,6 @@ interactions:
       - application/json
       host:
       - api.openai.com
-      x-stainless-arch:
-      - x64
-      x-stainless-async:
-      - 'false'
-      x-stainless-lang:
-      - python
-      x-stainless-os:
-      - Linux
-      x-stainless-package-version:
-      - 1.14.3
-      x-stainless-runtime:
-      - CPython
-      x-stainless-runtime-version:
-      - 3.11.4
     method: POST
     uri: https://api.openai.com/v1/embeddings
   response:
@@ -148,7 +134,7 @@ interactions:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86dbbcae1d59ea06-DFW
+      - 86dc0b233c080bf3-DFW
       Connection:
       - keep-alive
       Content-Encoding:
@@ -156,9 +142,15 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 01 Apr 2024 21:40:20 GMT
+      - Mon, 01 Apr 2024 22:33:54 GMT
       Server:
       - cloudflare
+      Set-Cookie:
+      - __cf_bm=p1UJnTkrG3.f8t_.MHhgMJQmF8cA7yo2xpPf5n73C7k-1712010834-1.0.1.1-KJ1UIA_XCrkITY7KxH90sbMMLNybR_qnD4jqiN6bxAQssQDTRnIWynqyHpFdCTEYf4Qb1gq3wIrsk8EU4d8Crw;
+        path=/; expires=Mon, 01-Apr-24 23:03:54 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=mGTToCG.SNSDe1WCm74LgdFJxN_QWBqiRlJQhgBSzD0-1712010834560-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
       Transfer-Encoding:
       - chunked
       access-control-allow-origin:
@@ -170,7 +162,7 @@ interactions:
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '17'
+      - '25'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
@@ -182,13 +174,13 @@ interactions:
       x-ratelimit-remaining-requests:
       - '4999'
       x-ratelimit-remaining-tokens:
-      - '4999996'
+      - '4999997'
       x-ratelimit-reset-requests:
       - 12ms
       x-ratelimit-reset-tokens:
       - 0s
       x-request-id:
-      - req_4adc17c97cb6c0748bdcf18878e38f08
+      - req_ef4c964d139d9c0ecb05000c3ddb1278
     status:
       code: 200
       message: OK

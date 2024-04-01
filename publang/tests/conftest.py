@@ -33,5 +33,7 @@ def test_docs_body(test_docs):
 @pytest.fixture(scope="module")
 def vcr_config():
     return {
-        "filter_headers": ['authorization', 'cookie', 'user-agent'],
+        "filter_headers": ['authorization', 'cookie', 'user-agent', 'x-stainless-arch',
+                           'x-stainless-async', 'x-stainless-lang', 'x-stainless-os', 'x-stainless-package-version',
+                           'x-stainless-runtime', 'x-stainless-runtime-version']
     }

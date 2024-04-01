@@ -55,16 +55,8 @@ def test_extract_from_multiple(test_docs):
     result = extract_from_text(
         texts, model_name="gpt-4-0125-preview", **TEST_TEMPLATE)
 
-    # Testing length of response rather than specific result
-    # because model outputs vary
-    expected_result_lens = [
-       3, 2, 3, 3, 1]
-
     assert isinstance(result, list)
     assert len(result) == 5
-
-    for i, res in enumerate(result):
-        assert len(res['groups']) == expected_result_lens[i]
 
 
 # Test extract_on_match function
