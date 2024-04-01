@@ -5,9 +5,10 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_absolute_percentage_error, r2_score
 
+
 def isin(a, li):
-    """ Nan safe is in function,  that returns second value.
-    This is useful because np.nan != np.nan 
+    """Nan safe is in function,  that returns second value.
+    This is useful because np.nan != np.nan
     """
     for b in li:
         if (pd.isna(a) & pd.isna(b)) or a == b:
@@ -15,8 +16,9 @@ def isin(a, li):
 
     return False
 
-def score_columns(true_df, predict_df,  scoring='mpe'):
-    """ Score columns of two dataframes, aggregatingby pmcid.
+
+def score_columns(true_df, predict_df, scoring="mpe"):
+    """Score columns of two dataframes, aggregatingby pmcid.
     Args
     ----
     true_df: pd.DataFrame
@@ -34,9 +36,9 @@ def score_columns(true_df, predict_df,  scoring='mpe'):
         Dictionary with percentage of pmcids with overlap for each column
     """
 
-    if scoring == 'mpe':
+    if scoring == "mpe":
         scorer = mean_absolute_percentage_error
-    elif scoring == 'r2':
+    elif scoring == "r2":
         scorer = r2_score
 
     res_mean = {}
@@ -46,18 +48,18 @@ def score_columns(true_df, predict_df,  scoring='mpe'):
     true_df = true_df.select_dtypes(include=[np.int64, np.float64])
     predict_df = predict_df.select_dtypes(include=[np.int64, np.float64])
 
-    true_df_sum = true_df.groupby('pmcid').sum()
-    predict_df_sum = predict_df.groupby('pmcid').sum()
+    true_df_sum = true_df.groupby("pmcid").sum()
+    predict_df_sum = predict_df.groupby("pmcid").sum()
 
-    true_df_mean = true_df.groupby('pmcid').mean()
-    predict_df_mean = predict_df.groupby('pmcid').mean()
+    true_df_mean = true_df.groupby("pmcid").mean()
+    predict_df_mean = predict_df.groupby("pmcid").mean()
 
     for col in true_df_mean:
         # Compute overlap using mean
         # Using mean results in NAs when aggregated values are both nan
         true_df_mean_col = true_df_mean[col].dropna()
         predict_df_mean_col = predict_df_mean[col].dropna()
-        
+
         # Index of rows where both true_df and predict_df are not nan
         ix = true_df_mean_col.index.intersection(predict_df_mean_col.index)
 
@@ -74,15 +76,9 @@ def score_columns(true_df, predict_df,  scoring='mpe'):
         true_df_sum_col = true_df_sum[col].loc[ix]
         predict_df_sum_col = predict_df_sum[col].loc[ix]
 
-        res_mean[col] = np.round(
-            scorer(true_df_mean_col, predict_df_mean_col),
-            2
-        )
+        res_mean[col] = np.round(scorer(true_df_mean_col, predict_df_mean_col), 2)
 
-        res_sum[col] = np.round(
-            scorer(true_df_sum_col, predict_df_sum_col),
-            2
-        )
+        res_sum[col] = np.round(scorer(true_df_sum_col, predict_df_sum_col), 2)
 
         counts[col] = overlap
 
@@ -90,10 +86,10 @@ def score_columns(true_df, predict_df,  scoring='mpe'):
 
 
 def hungarian_match_compare(true_df, predict_df):
-    """ Compare two dataframes by matching rows using the Hungarian algorithm. """
-    compare_col = list(set(true_df.columns) & set(predict_df.columns) - {'pmcid'})
+    """Compare two dataframes by matching rows using the Hungarian algorithm."""
+    compare_col = list(set(true_df.columns) & set(predict_df.columns) - {"pmcid"})
     res = defaultdict(float)
-    for pmcid, df in true_df.groupby('pmcid'):
+    for pmcid, df in true_df.groupby("pmcid"):
         for col in df:
             if col in compare_col:
                 match_predict_df = predict_df[predict_df.pmcid == pmcid][col].to_list()
@@ -105,6 +101,6 @@ def hungarian_match_compare(true_df, predict_df):
                         match_predict_df.remove(rem_val)
                 res[col] += score
 
-    res = {k: np.round(1 - (v / len(true_df)), 2) for k,v in res.items()}
-    
+    res = {k: np.round(1 - (v / len(true_df)), 2) for k, v in res.items()}
+
     return res

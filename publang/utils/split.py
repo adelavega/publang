@@ -2,37 +2,42 @@ import re
 from typing import List, Optional
 import warnings
 
+
 def split_lines(text: str, max_tokens: int = 100) -> List[str]:
-    """Join strings to form largest possible strings that are less than max_tokens."""
+    """Join strings to form largest possible strings that are less than max_tokens.
+    
+    ## TODO: Define tokens as not just chars, and force split if a line is too long. 
+    """
 
     strings = text.splitlines()
-    if text[-1] == '\n':
-        strings[-1] = strings[-1] + '\n'
+    if text[-1] == "\n":
+        strings[-1] = strings[-1] + "\n"
 
     chunks = []
-    current_chunk = ''
+    current_chunk = ""
     for ix, string in enumerate(strings):
         if ix != 0:
-            string = '\n' + string
+            string = "\n" + string
         if len(current_chunk) + len(string) + 1 <= max_tokens:
-                current_chunk += string
+            current_chunk += string
         else:
-            if current_chunk != '':
+            if current_chunk != "":
                 chunks.append(current_chunk)
             current_chunk = string
     chunks.append(current_chunk)
 
-    if strings[-1] == '':
-        chunks[-1] = chunks[-1] + '\n'
+    if strings[-1] == "":
+        chunks[-1] = chunks[-1] + "\n"
 
     return chunks
 
 
 def split_markdown(
-        text: str, 
-        delimiters: List[str], 
-        min_tokens: Optional[int] = None, 
-        max_tokens: Optional[int] = None) -> List[str]:
+    text: str,
+    delimiters: List[str],
+    min_tokens: Optional[int] = None,
+    max_tokens: Optional[int] = None,
+) -> List[str]:
     """Split markdown text into chunks based on delimiters.
 
     Args:
@@ -49,7 +54,7 @@ def split_markdown(
         # Join lines to form largest possible strings that are less than max_tokens
         return [(None, c) for c in split_lines(text, max_tokens=max_tokens)]
 
-    delim_match = f'\n{delimiters[0]}'
+    delim_match = f"\n{delimiters[0]}"
 
     # Split on first delimiter
     candidate_chunks = re.split(delim_match, text)
@@ -57,7 +62,7 @@ def split_markdown(
     # If there is only one chunk, split on next delimiter
     if len(candidate_chunks) == 1:
         chunks = split_markdown(text, delimiters[1:], min_tokens, max_tokens)
-    
+
     # Iterate over chunks
     chunks = []
     prev_chunk = None
@@ -65,7 +70,7 @@ def split_markdown(
     for ix, chunk in enumerate(candidate_chunks):
         if chunk:
             if not ix == 0:
-                section_name, _ = chunk.split('\n', maxsplit=1)
+                section_name, _ = chunk.split("\n", maxsplit=1)
                 chunk = delim_match + chunk
             if prev_chunk:
                 chunk = prev_chunk + chunk
@@ -74,35 +79,44 @@ def split_markdown(
                 prev_chunk = chunk
                 continue
             if max_tokens and len(chunk) > max_tokens:
-                chunks.append((section_name, split_markdown(chunk, delimiters[1:], min_tokens, max_tokens)))
+                chunks.append(
+                    (
+                        section_name,
+                        split_markdown(chunk, delimiters[1:], min_tokens, max_tokens),
+                    )
+                )
             else:
                 chunks.append((section_name, chunk))
 
     return chunks
 
+
 def _flatten_sections(sections, section_depth=0, **kwargs):
     """Flatten list of tuples into list of dictionaries with keys corresponding to section headers."""
     flattened = []
     for section_name, content in sections:
-        section_key = f'section_{section_depth}'
+        section_key = f"section_{section_depth}"
         if isinstance(content, tuple):
             content = [content]
         if isinstance(content, list):
             if section_name is not None:
                 kwargs[section_key] = section_name
             flattened.extend(
-                _flatten_sections(content, section_depth=section_depth+1, **kwargs))
+                _flatten_sections(content, section_depth=section_depth + 1, **kwargs)
+            )
         else:
             if section_name is not None:
                 kwargs[section_key] = section_name
-            flattened.append({'content': content, **kwargs})
+            flattened.append({"content": content, **kwargs})
     return flattened
 
 
-def split_pmc_document(text: str, 
-            delimiters: List[str] = ['# ', '## ', '### '], 
-            min_tokens: int = 20, 
-            max_tokens: int = 4000) -> List[str]:
+def split_pmc_document(
+    text: str,
+    delimiters: List[str] = ["# ", "## ", "### "],
+    min_tokens: int = 20,
+    max_tokens: int = None,
+) -> List[str]:
     """Split PMC document text into chunks based on delimiters, and split by top level sections.
 
     Args:
@@ -117,7 +131,7 @@ def split_pmc_document(text: str,
 
     # If failed to split, markdown is not formatted properly
     # Skip for now
-    if len(re.split(f'\n# ', text)) == 1:
+    if len(re.split(f"\n# ", text)) == 1:
         warnings.warn("Skipping document, not in markdown")
         return
 
@@ -127,10 +141,9 @@ def split_pmc_document(text: str,
     # Add start_chars and end_chars
     for ix, chunk in enumerate(_outputs):
         if ix == 0:
-            chunk['start_char'] = 0
+            chunk["start_char"] = 0
         else:
-            chunk['start_char'] = _outputs[ix-1]['end_char']
-        chunk['end_char'] = chunk['start_char'] + len(chunk['content'])
+            chunk["start_char"] = _outputs[ix - 1]["end_char"]
+        chunk["end_char"] = chunk["start_char"] + len(chunk["content"])
 
     return _outputs
-
