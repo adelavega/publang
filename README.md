@@ -1,5 +1,7 @@
 # publang
 
+[![CI](https://github.com/adelavega/publang/actions/workflows/tests.yml/badge.svg)](https://github.com/adelavega/publang/actions/workflows/tests.yml)
+
 publang is a tool for semantic search and information retrieval using large lange models over biomedical documents.
 Currently, we are focused on using OpenAI's API, but we have plans to expand to locally available and domain specific LLMs.
 
