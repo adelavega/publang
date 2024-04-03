@@ -24,7 +24,7 @@ def test_docs_body(test_docs):
     """ Returns first Body section for each tes paper"""
     sections = []
     for doc in test_docs:
-        for section in split_pmc_document(doc['text'], max_tokens=None):
+        for section in split_pmc_document(doc['text'], max_chars=None):
             if section.get('section_0', '') == 'Body':
                 sections.append(section['content'])
 
