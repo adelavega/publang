@@ -3,10 +3,8 @@ from typing import List, Optional
 import warnings
 
 
-def split_lines(text: str, max_tokens: int = 100) -> List[str]:
-    """Join strings to form largest possible strings that are less than max_tokens.
-    
-    ## TODO: Define tokens as not just chars, and force split if a line is too long. 
+def split_lines(text: str, max_chars: int = 100) -> List[str]:
+    """Join strings to form largest possible strings that are less than max_chars
     """
 
     strings = text.splitlines()
@@ -18,7 +16,7 @@ def split_lines(text: str, max_tokens: int = 100) -> List[str]:
     for ix, string in enumerate(strings):
         if ix != 0:
             string = "\n" + string
-        if len(current_chunk) + len(string) + 1 <= max_tokens:
+        if len(current_chunk) + len(string) + 1 <= max_chars:
             current_chunk += string
         else:
             if current_chunk != "":
@@ -35,8 +33,8 @@ def split_lines(text: str, max_tokens: int = 100) -> List[str]:
 def split_markdown(
     text: str,
     delimiters: List[str],
-    min_tokens: Optional[int] = None,
-    max_tokens: Optional[int] = None,
+    min_chars: Optional[int] = None,
+    max_chars: Optional[int] = None,
 ) -> List[str]:
     """Split markdown text into chunks based on delimiters.
 
@@ -44,15 +42,15 @@ def split_markdown(
         text (str): Markdown text to split.
         delimiters (list): List of delimiters to split on.
         top_level (bool): Whether or not the current text is top level.
-        max_tokens (int): Maximum number of tokens per chunk.
+        max_chars (int): Maximum number of tokens per chunk.
 
     Returns:
         list: List of chunks.
     """
 
     if not delimiters:
-        # Join lines to form largest possible strings that are less than max_tokens
-        return [(None, c) for c in split_lines(text, max_tokens=max_tokens)]
+        # Join lines to form largest possible strings that are less than max_chars
+        return [(None, c) for c in split_lines(text, max_chars=max_chars)]
 
     delim_match = f"\n{delimiters[0]}"
 
@@ -61,7 +59,7 @@ def split_markdown(
 
     # If there is only one chunk, split on next delimiter
     if len(candidate_chunks) == 1:
-        chunks = split_markdown(text, delimiters[1:], min_tokens, max_tokens)
+        chunks = split_markdown(text, delimiters[1:], min_chars, max_chars)
 
     # Iterate over chunks
     chunks = []
@@ -75,14 +73,14 @@ def split_markdown(
             if prev_chunk:
                 chunk = prev_chunk + chunk
                 prev_chunk = None
-            if min_tokens and len(chunk) < min_tokens:
+            if min_chars and len(chunk) < min_chars:
                 prev_chunk = chunk
                 continue
-            if max_tokens and len(chunk) > max_tokens:
+            if max_chars and len(chunk) > max_chars:
                 chunks.append(
                     (
                         section_name,
-                        split_markdown(chunk, delimiters[1:], min_tokens, max_tokens),
+                        split_markdown(chunk, delimiters[1:], min_chars, max_chars),
                     )
                 )
             else:
@@ -114,16 +112,16 @@ def _flatten_sections(sections, section_depth=0, **kwargs):
 def split_pmc_document(
     text: str,
     delimiters: List[str] = ["# ", "## ", "### "],
-    min_tokens: int = 20,
-    max_tokens: int = None,
+    min_chars: int = 20,
+    max_chars: int = None,
 ) -> List[str]:
     """Split PMC document text into chunks based on delimiters, and split by top level sections.
 
     Args:
         text (str): Markdown text to split.
         delimiters (list): List of delimiters to split on.
-        min_tokens (int): Minimum number of tokens per chunk (for headers)
-        max_tokens (int): Maximum number of tokens per chunk.
+        min_chars (int): Minimum number of tokens per chunk (for headers)
+        max_chars (int): Maximum number of tokens per chunk.
 
     Returns:
         list: List of chunks.
@@ -135,7 +133,7 @@ def split_pmc_document(
         warnings.warn("Skipping document, not in markdown")
         return
 
-    _outputs = split_markdown(text, delimiters, min_tokens, max_tokens)
+    _outputs = split_markdown(text, delimiters, min_chars, max_chars)
     _outputs = _flatten_sections(_outputs)
 
     # Add start_chars and end_chars

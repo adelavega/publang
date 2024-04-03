@@ -12,22 +12,22 @@ from publang.utils.oai import get_openai_embedding
 def embed_pmc_articles(
     articles: Union[str, List[str]],
     model_name: str = "text-embedding-ada-002",
-    min_tokens: int = 30,
-    max_tokens: int = 4000,
+    min_chars: int = 30,
+    max_chars: int = 4000,
     num_workers: int = 1,
     **kwargs
 ) -> List[Dict[str, any]]:
     """Embed a PMC article using OpenAI's API.
-    Split the article into chunks of min_tokens to max_tokens,
+    Split the article into chunks of min_chars to max_chars,
     and embed each chunk.
     """
 
     if isinstance(articles, str):
         articles = [articles]
 
-    def _split_embed(article, model_name, min_tokens, max_tokens, **kwargs):
+    def _split_embed(article, model_name, min_chars, max_chars, **kwargs):
         split_doc = split_pmc_document(
-            article, min_tokens=min_tokens, max_tokens=max_tokens
+            article, min_chars=min_chars, max_chars=max_chars
         )
 
         if split_doc:
@@ -47,8 +47,8 @@ def embed_pmc_articles(
                 _split_embed,
                 article,
                 model_name,
-                min_tokens,
-                max_tokens,
+                min_chars,
+                max_chars,
                 **kwargs,
             )
             for article in articles

@@ -3,14 +3,14 @@ from publang.utils.split import split_lines, split_markdown, _flatten_sections, 
 
 def test_split_lines():
     text = "This is a test.\nThis is only a test."
-    result = split_lines(text, max_tokens=20)
+    result = split_lines(text, max_chars=20)
     assert result == ["This is a test.", "\nThis is only a test."]
 
 
 def test_split_markdown():
     text = "# Header\nThis is a test.\n## Subheader\nThis is only a test."
     delimiters = ["# ", "## "]
-    result = split_markdown(text, delimiters, min_tokens=20, max_tokens=50)
+    result = split_markdown(text, delimiters, min_chars=20, max_chars=50)
     assert result == [(None, [(None, '# Header\nThis is a test.'), ('Subheader', '\n## Subheader\nThis is only a test.')])]
 
 
@@ -23,7 +23,7 @@ def test__flatten_sections():
 def test_split_pmc_document(test_docs):
     text = test_docs[0]['text']
     delimiters = ["# ", "## ", "###"]
-    result = split_pmc_document(text, delimiters, min_tokens=20, max_tokens=50)
+    result = split_pmc_document(text, delimiters, min_chars=20, max_chars=50)
     assert len(result) == 180
 
     # First section is author names
