@@ -46,6 +46,10 @@ def extract_from_text(
 
         return data
 
+    # If only one text, return single result
+    if len(texts) == 1:
+        return _extract(texts[0], messages, output_schema, model_name)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [
             executor.submit(
@@ -97,10 +101,12 @@ def extract_on_match(
 
 
 def _extract_iteratively(sub_df, messages, output_schema, model_name="gpt-3.5-turbo"):
-    """Iteratively attempt to extract annotations from chunks in ranks_df until one succeeds."""
+    """Iteratively attempt to extract annotations from chunks in ranks_df until one succeeds.
+    TODO: Make this generic for any extraction task.
+    """
     for _, row in sub_df.iterrows():
         res = extract_from_text(row["content"], messages, output_schema, model_name)
-        if res["groups"]:
+        if res:
             result = [
                 {**r, **row[["rank", "start_char", "end_char", "pmcid"]].to_dict()}
                 for r in res["groups"]
@@ -136,8 +142,8 @@ def search_extract(
         ]
 
         results = []
-        for future in tqdm.tqdm(futures, total=len(ranks_df.pmcid.unique())):
-            results.extend(future.result())
+        for future in tqdm.tqdm(futures, total=len(futures)):
+            results += future.result()
 
     results = pd.DataFrame(results)
 
