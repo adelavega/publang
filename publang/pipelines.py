@@ -109,7 +109,7 @@ def search_extract(
 
         results = []
         for future in tqdm.tqdm(futures, total=len(futures)):
-            results += future.result()
+            results.append(future.result())
             # Save every 10 results
             if output_path is not None and len(results) % 10 == 0:
                 json.dump(results, open(output_path, "w"))
