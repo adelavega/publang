@@ -86,13 +86,12 @@ def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
 
 
 def query_embeddings(
-    embeddings: List[List], query: str, compute_ranks=True
+    embeddings: List[List], query_embedding: str, compute_ranks=True
 ) -> Tuple[List[float], List[int]]:
-    """Query a list of embeddings with a query string. Returns the distances and ranks of the embeddings."""
+    """Query a list of embeddings with a search embeddding. Returns the distances and ranks of the embeddings."""
 
     embeddings = np.array(embeddings)
 
-    query_embedding = get_openai_embedding(query)
     distances = euclidean_distances(
         embeddings, np.array(query_embedding).reshape(1, -1), squared=True
     )
@@ -102,10 +101,11 @@ def query_embeddings(
 
 def get_chunk_query_distance(embeddings_df, query):
     # For every document, get distance and rank between query and embeddings
+    query_embedding = get_openai_embedding(query)
     distances, ranks = zip(
         *[
-            query_embeddings(sub_df["embedding"].tolist(), query)
-            for pmcid, sub_df in embeddings_df.groupby("pmcid", sort=False)
+            query_embeddings(sub_df["embedding"].tolist(), query_embedding)
+            for _, sub_df in embeddings_df.groupby("pmcid", sort=False)
         ]
     )
 

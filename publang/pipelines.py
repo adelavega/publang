@@ -93,10 +93,12 @@ def search_extract(
         embeddings = embeddings[embeddings.section_0 == subset_section]
 
     # Search for query in chunks
+    print("Searching for query in chunks...")
     ranks_df = get_chunk_query_distance(embeddings, search_query)
     ranks_df.sort_values("distance", inplace=True)
 
     # For every document, extract annotations by distance iteratively
+    print("Extracting annotations...")
     with concurrent.futures.ThreadPoolExecutor(
             max_workers=num_workers) as executor:
         futures = [
