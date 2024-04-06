@@ -24,7 +24,6 @@ def extract_from_text(
         output_schema (Dict[str, object]): The schema for the output.
         model_name (str, optional): The name of the OpenAI model to use.
         num_workers (int, optional): The number of worker threads to use.
-
     Returns:
         Dict[str, str]: The extracted information.
     """

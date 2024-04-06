@@ -9,7 +9,8 @@ import tqdm
 import concurrent.futures
 
 
-def _extract_iteratively(sub_df, messages, output_schema, model_name):
+def _extract_iteratively(
+        sub_df, messages, output_schema, model_name, retry_attempts=2):
     """Iteratively attempt to extract annotations from chunks in ranks_df.
 
     Args:
@@ -17,16 +18,20 @@ def _extract_iteratively(sub_df, messages, output_schema, model_name):
         messages (List[Dict[str, str]]): A list of messages to use.
         output_schema (Dict[str, object]): Schema for the output.
         model_name (str): Name of the OpenAI model to use for the extraction.
+        retry_attempts (int): Number of retry attempts to make.
     Returns:
         List[Dict[str, any]]: A list of dictionaries containing values.
     """
+    output_keys = output_schema["properties"].keys()
     for _, row in sub_df.iterrows():
-        res = extract_from_text(
-            row["content"], messages, output_schema, model_name)
-        if res:
-            result = {**res, **row[["rank", "start_char", "end_char", "pmcid"]].to_dict()}
-            return result
-
+        _retries = retry_attempts
+        while _retries > 0:
+            res = extract_from_text(
+                row["content"], messages, output_schema, model_name)
+            # Check that main key contains values
+            if res and all([res[key] for key in output_keys]):
+                return {**res, **row[["rank", "start_char", "end_char", "pmcid"]].to_dict()}
+            _retries -= 1
     return []
 
 
