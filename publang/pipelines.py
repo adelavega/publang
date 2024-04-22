@@ -153,7 +153,7 @@ def extract_on_match(
     annotations_df,
     messages,
     output_schema,
-    model_name="gpt-3.5-turbo",
+    model="gpt-3.5-turbo",
     num_workers=1,
 ):
     """Extract anntotations on chunk with relevant information
@@ -168,7 +168,7 @@ def extract_on_match(
         sections.content.to_list(),
         messages,
         output_schema,
-        model_name=model_name,
+        model=model,
         num_workers=num_workers,
     )
 

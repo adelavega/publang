@@ -15,9 +15,7 @@ def embed_pmc_articles(
     min_chars: int = 30,
     max_chars: int = 4000,
     num_workers: int = 1,
-    meta_data: Dict[str, any] = None,
     client=None,
-    **kwargs
 ) -> List[Dict[str, any]]:
     """Embeds PMC articles using OpenAI text embedding model.
 
@@ -34,30 +32,26 @@ def embed_pmc_articles(
 
     """
 
-    def _split_embed(article, model_name, min_chars, max_chars, **kwargs):
-        pmcid, content = article["pmcid"], article["text"]
+    def _split_embed(article, model, min_chars, max_chars):
         split_doc = split_pmc_document(
-            content, min_chars=min_chars, max_chars=max_chars
+            article['text'], min_chars=min_chars, max_chars=max_chars
         )
 
         if split_doc:
             # Embed each chunk
             for chunk in split_doc:
                 res = get_openai_embedding(
-                    chunk["content"], model, client=client, **kwargs
+                    chunk["content"], model, client=client,
                 )
                 chunk["embedding"] = res
-                for key, value in meta_data.items():
-                    chunk[key] = value
+                chunk["pmcid"] = article["pmcid"]
             return split_doc
         else:
             return []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
         futures = [
-            exc.submit(
-                _split_embed, article, model, min_chars, max_chars, meta_data, **kwargs
-            )
+            exc.submit(_split_embed, article, model, min_chars, max_chars)
             for article in articles
         ]
 
