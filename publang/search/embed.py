@@ -20,15 +20,15 @@ def embed_pmc_articles(
     """Embeds PMC articles using OpenAI text embedding model.
 
     Args:
-        articles (List[Dict]): A list of PMC articles to be embedded. Each article is a dictionary with keys 'pmcid' and 'text'.
-        model (str, optional): The name of the text embedding model to be used. Defaults to "text-embedding-ada-002".
-        min_chars (int, optional): The minimum number of characters in a chunk. Defaults to 30.
-        max_chars (int, optional): The maximum number of characters in a chunk. Defaults to 4000.
-        num_workers (int, optional): The number of worker threads to use for parallel processing. Defaults to 1.
-        **kwargs: Additional keyword arguments to be passed to the embedding function.
+        articles (List[Dict]): A list of PMC articles to be embedded.
+            Each article is a dictionary with keys 'pmcid' and 'text'.
+        model (str, optional): The name of the text embedding model to be used
+        min_chars (int, optional): The minimum number of characters in a chunk.
+        max_chars (int, optional): The maximum number of characters in a chunk.
+        num_workers (int, optional): The number of workers for parallelization.
 
     Returns:
-        List[Dict[str, any]]: A list of dictionaries containing the embedded PMC articles.
+        List[Dict[str, any]]: A list of dicts containing the embedded articles.
 
     """
 
