@@ -8,7 +8,7 @@ import concurrent.futures
 from sklearn.metrics.pairwise import euclidean_distances
 from publang.utils.oai import get_openai_embedding
 
-\
+
 def embed_pmc_articles(
     articles: List[Dict],
     model: str = "text-embedding-ada-002",
@@ -33,6 +33,7 @@ def embed_pmc_articles(
         List[Dict[str, any]]: A list of dictionaries containing the embedded PMC articles.
 
     """
+
     def _split_embed(article, model_name, min_chars, max_chars, **kwargs):
         pmcid, content = article["pmcid"], article["text"]
         split_doc = split_pmc_document(
@@ -43,7 +44,8 @@ def embed_pmc_articles(
             # Embed each chunk
             for chunk in split_doc:
                 res = get_openai_embedding(
-                    chunk["content"], model, client=client, **kwargs)
+                    chunk["content"], model, client=client, **kwargs
+                )
                 chunk["embedding"] = res
                 for key, value in meta_data.items():
                     chunk[key] = value
@@ -54,13 +56,7 @@ def embed_pmc_articles(
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
         futures = [
             exc.submit(
-                _split_embed,
-                article,
-                model,
-                min_chars,
-                max_chars,
-                meta_data,
-                **kwargs
+                _split_embed, article, model, min_chars, max_chars, meta_data, **kwargs
             )
             for article in articles
         ]

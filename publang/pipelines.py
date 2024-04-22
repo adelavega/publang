@@ -10,8 +10,8 @@ import concurrent.futures
 
 
 def _extract_iteratively(
-        sub_df, messages, output_schema, model, retry_attempts=2, 
-        **kwargs):
+    sub_df, messages, output_schema, model, retry_attempts=2, **kwargs
+):
     """Iteratively attempt to extract annotations from chunks in ranks_df.
 
     Args:
@@ -28,10 +28,14 @@ def _extract_iteratively(
         _retries = retry_attempts
         while _retries > 0:
             res = extract_from_text(
-                row["content"], messages, output_schema, model, **kwargs)
+                row["content"], messages, output_schema, model, **kwargs
+            )
             # Check that main key contains values
             if res and all([res[key] for key in output_keys]):
-                return {**res, **row[["rank", "start_char", "end_char", "pmcid"]].to_dict()}
+                return {
+                    **res,
+                    **row[["rank", "start_char", "end_char", "pmcid"]].to_dict(),
+                }
             _retries -= 1
     return []
 
@@ -108,19 +112,22 @@ def search_extract(
     # Search for query in chunks
     print("Searching for query in chunks...")
     ranks_df = get_chunk_query_distance(
-        embeddings, search_query,
-        client=embedding_client, model=embedding_model
-        )
+        embeddings, search_query, client=embedding_client, model=embedding_model
+    )
     ranks_df.sort_values("distance", inplace=True)
 
     # For every document, extract annotations by distance iteratively
     print("Extracting annotations...")
-    with concurrent.futures.ThreadPoolExecutor(
-            max_workers=num_workers) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures = [
             executor.submit(
-                _extract_iteratively, sub_df, messages, output_schema,
-                chat_model, client=chat_client, **kwargs
+                _extract_iteratively,
+                sub_df,
+                messages,
+                output_schema,
+                chat_model,
+                client=chat_client,
+                **kwargs
             )
             for _, sub_df in ranks_df.groupby("pmcid", sort=False)
         ]

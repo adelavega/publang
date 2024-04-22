@@ -11,21 +11,18 @@ from publang.utils.string import format_string_with_variables
 
 def parallelize_extract(func):
     """Decorator to parallelize the extraction process over texts."""
+
     def wrapper(texts, *args, **kwargs):
         num_workers = kwargs.get("num_workers", 1)
         if isinstance(texts, str):
             texts = [texts]
         with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
-            futures = [
-                exc.submit(
-                    func, text, *args, **kwargs
-                )
-                for text in texts
-            ]
+            futures = [exc.submit(func, text, *args, **kwargs) for text in texts]
         results = []
         for future in tqdm.tqdm(futures, total=len(texts)):
             results.append(future.result())
         return results
+
     return wrapper
 
 
@@ -57,10 +54,13 @@ def extract_from_text(
     messages = deepcopy(messages)
     # Format the message with the text
     for message in messages:
-        message["content"] = format_string_with_variables(
-            message["content"], text=text)
+        message["content"] = format_string_with_variables(message["content"], text=text)
 
     return get_openai_chatcompletion(
-        messages, output_schema=output_schema, model=model,
-        response_format=response_format, client=client, **kwargs
+        messages,
+        output_schema=output_schema,
+        model=model,
+        response_format=response_format,
+        client=client,
+        **kwargs
     )

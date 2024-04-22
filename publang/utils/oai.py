@@ -68,8 +68,7 @@ def get_openai_chatcompletion(
 
     if output_schema is not None:
         if response_format == "json":
-            raise ValueError(
-                "Output schema is not supported with json response format")
+            raise ValueError("Output schema is not supported with json response format")
 
         functions, function_call = _format_function(output_schema)
         kwargs["functions"] = functions
@@ -78,13 +77,14 @@ def get_openai_chatcompletion(
     if client is None:
         client = openai.OpenAI()
 
-    kwargs.update({
-        "model": model,
-        "messages": messages,
-        "temperature": temperature,
-        "timeout": timeout,
-        "response_format": response_format
-    }
+    kwargs.update(
+        {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "timeout": timeout,
+            "response_format": response_format,
+        }
     )
 
     completion = reexecutor(client.chat.completions.create, **kwargs)
@@ -104,9 +104,7 @@ def get_openai_chatcompletion(
 
 
 def get_openai_embedding(
-        input: str,
-        client: openai.OpenAI = None,
-        model: str = "text-embedding-ada-002"
+    input: str, client: openai.OpenAI = None, model: str = "text-embedding-ada-002"
 ) -> List[float]:
     """Get the embedding for a given input string"""
 

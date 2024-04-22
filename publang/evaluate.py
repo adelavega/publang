@@ -33,7 +33,7 @@ def score_columns(true_df, predict_df, scoring="mpe"):
     res_sum: dict
         Dictionary with score for each column, aggregated by sum
     counts: dict
-        Dictionary with percentage of pmcids with overlap for each column, 
+        Dictionary with percentage of pmcids with overlap for each column,
         for studies that have both true and predicted values
     """
 

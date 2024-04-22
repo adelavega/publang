@@ -4,8 +4,7 @@ import warnings
 
 
 def split_lines(text: str, max_chars: int = 100) -> List[str]:
-    """Join strings to form largest possible strings that are less than max_chars
-    """
+    """Join strings to form largest possible strings that are less than max_chars"""
 
     strings = text.splitlines()
     if text[-1] == "\n":
