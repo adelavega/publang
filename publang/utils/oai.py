@@ -104,7 +104,9 @@ def get_openai_chatcompletion(
 
 
 def get_openai_embedding(
-    input: str, client: openai.OpenAI = None, model: str = "text-embedding-ada-002"
+    input: str,
+    model: str = "text-embedding-ada-002",
+    client=None
 ) -> List[float]:
     """Get the embedding for a given input string"""
 
