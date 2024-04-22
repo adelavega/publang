@@ -37,6 +37,8 @@ def split_markdown(
     max_chars: Optional[int] = None,
 ) -> List[str]:
     """Split markdown text into chunks based on delimiters.
+    If min_chars is set, will split on delimiters and join chunks that are less than min_chars.
+    If max_chars is set, will split on delimiters and split chunks that are greater than max_chars.
 
     Args:
         text (str): Markdown text to split.

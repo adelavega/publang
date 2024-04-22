@@ -3,31 +3,38 @@
 import tqdm
 import numpy as np
 from publang.utils.split import split_pmc_document
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 import concurrent.futures
 from sklearn.metrics.pairwise import euclidean_distances
 from publang.utils.oai import get_openai_embedding
 
-
+\
 def embed_pmc_articles(
-    articles: Union[str, List[str]],
+    articles: List[Dict],
     model_name: str = "text-embedding-ada-002",
     min_chars: int = 30,
     max_chars: int = 4000,
     num_workers: int = 1,
     **kwargs
 ) -> List[Dict[str, any]]:
-    """Embed a PMC article using OpenAI's API.
-    Split the article into chunks of min_chars to max_chars,
-    and embed each chunk.
+    """Embeds PMC articles using OpenAI text embedding model.
+
+    Args:
+        articles (List[Dict]): A list of PMC articles to be embedded. Each article is a dictionary with keys 'pmcid' and 'text'.
+        model_name (str, optional): The name of the text embedding model to be used. Defaults to "text-embedding-ada-002".
+        min_chars (int, optional): The minimum number of characters in a chunk. Defaults to 30.
+        max_chars (int, optional): The maximum number of characters in a chunk. Defaults to 4000.
+        num_workers (int, optional): The number of worker threads to use for parallel processing. Defaults to 1.
+        **kwargs: Additional keyword arguments to be passed to the embedding function.
+
+    Returns:
+        List[Dict[str, any]]: A list of dictionaries containing the embedded PMC articles.
+
     """
-
-    if isinstance(articles, str):
-        articles = [articles]
-
     def _split_embed(article, model_name, min_chars, max_chars, **kwargs):
+        pmcid, content = article["pmcid"], article["text"]
         split_doc = split_pmc_document(
-            article, min_chars=min_chars, max_chars=max_chars
+            content, min_chars=min_chars, max_chars=max_chars
         )
 
         if split_doc:
@@ -35,6 +42,7 @@ def embed_pmc_articles(
             for chunk in split_doc:
                 res = get_openai_embedding(chunk["content"], model_name)
                 chunk["embedding"] = res
+                chunk["pmcid"] = pmcid
                 for key, value in kwargs.items():
                     chunk[key] = value
             return split_doc
@@ -49,7 +57,7 @@ def embed_pmc_articles(
                 model_name,
                 min_chars,
                 max_chars,
-                **kwargs,
+                **kwargs
             )
             for article in articles
         ]
@@ -78,13 +86,12 @@ def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
 
 
 def query_embeddings(
-    embeddings: List[List], query: str, compute_ranks=True
+    embeddings: List[List], query_embedding: str, compute_ranks=True
 ) -> Tuple[List[float], List[int]]:
-    """Query a list of embeddings with a query string. Returns the distances and ranks of the embeddings."""
+    """Query a list of embeddings with a search embeddding. Returns the distances and ranks of the embeddings."""
 
     embeddings = np.array(embeddings)
 
-    query_embedding = get_openai_embedding(query)
     distances = euclidean_distances(
         embeddings, np.array(query_embedding).reshape(1, -1), squared=True
     )
@@ -94,10 +101,11 @@ def query_embeddings(
 
 def get_chunk_query_distance(embeddings_df, query):
     # For every document, get distance and rank between query and embeddings
+    query_embedding = get_openai_embedding(query)
     distances, ranks = zip(
         *[
-            query_embeddings(sub_df["embedding"].tolist(), query)
-            for pmcid, sub_df in embeddings_df.groupby("pmcid", sort=False)
+            query_embeddings(sub_df["embedding"].tolist(), query_embedding)
+            for _, sub_df in embeddings_df.groupby("pmcid", sort=False)
         ]
     )
 
