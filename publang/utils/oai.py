@@ -45,29 +45,40 @@ def _format_function(output_schema):
 
 def get_openai_chatcompletion(
     messages: List[Dict[str, str]],
+    client: openai.OpenAI = None,
     output_schema: Dict[str, object] = None,
     model_name: str = "gpt-4-0125-preview",
     temperature: float = 0,
     timeout: int = 30,
+    response_type: str = None,
+    kwargs: Dict[str, object] = None
 ) -> str:
 
-    kwargs = {
+    if kwargs is None:
+        kwargs = {}
+
+    kwargs.update({
         "model": model_name,
         "messages": messages,
         "temperature": temperature,
         "timeout": timeout,
+        "response_type": response_type
     }
+    )
+
     if output_schema is not None:
         functions, function_call = _format_function(output_schema)
         kwargs["functions"] = functions
         kwargs["function_call"] = function_call
 
-    client = openai.OpenAI()
+    if client is None:
+        client = openai.OpenAI()
+
     completion = reexecutor(client.chat.completions.create, **kwargs)
 
     message = completion.choices[0].message
 
-    # If parameters were given, extraction json
+    # If parameters were given, extract json
     if output_schema is not None:
         response = json.loads(message.function_call.arguments)
     else:
@@ -76,9 +87,16 @@ def get_openai_chatcompletion(
     return response
 
 
-def get_openai_embedding(input: str, 
-                         model_name: str = "text-embedding-ada-002") -> List[float]:
-    client = openai.OpenAI()
+def get_openai_embedding(
+        input: str,
+        client: openai.OpenAI = None,
+        model_name: str = "text-embedding-ada-002"
+) -> List[float]:
+    """Get the embedding for a given input string"""
+
+    if client is None:
+        client = openai.OpenAI()
+
     resp = reexecutor(client.embeddings.create, input=input, model=model_name)
 
     embedding = resp.data[0].embedding
