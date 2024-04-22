@@ -44,8 +44,8 @@ def test_extract_from_text(test_docs_body):
 
     expected_result = {'groups': [{'count': 28}, {'count': 20}, {'count': 30}]}
 
-    assert isinstance(result, list)
     res = result[0]
+
     assert 'groups' in res
     assert res == expected_result
 
@@ -57,18 +57,3 @@ def test_extract_from_multiple(test_docs):
 
     assert isinstance(result, list)
     assert len(result) == 5
-
-
-# # Test search_extract function
-# def test_search_extract():
-#     embeddings_df = ...
-#     query = "search query"
-#     messages = "Search for query and extract annotations."
-#     output_schema = {"param1": "value1", "param2": "value2"}
-#     model_name = "gpt-3.5-turbo"
-#     output_path = "output.csv"
-#     num_workers = 2
-
-#     result = search_extract(embeddings_df, query, messages, output_schema, model, output_path, num_workers)
-
-#     # Add assertions to validate the result

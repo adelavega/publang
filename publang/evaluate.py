@@ -33,7 +33,8 @@ def score_columns(true_df, predict_df, scoring="mpe"):
     res_sum: dict
         Dictionary with score for each column, aggregated by sum
     counts: dict
-        Dictionary with percentage of pmcids with overlap for each column
+        Dictionary with percentage of pmcids with overlap for each column, 
+        for studies that have both true and predicted values
     """
 
     if scoring == "mpe":
@@ -60,13 +61,13 @@ def score_columns(true_df, predict_df, scoring="mpe"):
         true_df_mean_col = true_df_mean[col].dropna()
         predict_df_mean_col = predict_df_mean[col].dropna()
 
+        n_annots = true_df_mean_col.shape[0]
+
         # Index of rows where both true_df and predict_df are not nan
         ix = true_df_mean_col.index.intersection(predict_df_mean_col.index)
 
         if len(ix) == 0:
             continue
-
-        overlap = np.round(len(ix) / predict_df_mean_col.shape[0], 2)
 
         # Mean aggregation
         true_df_mean_col = true_df_mean_col.loc[ix]
@@ -80,7 +81,7 @@ def score_columns(true_df, predict_df, scoring="mpe"):
 
         res_sum[col] = np.round(scorer(true_df_sum_col, predict_df_sum_col), 2)
 
-        counts[col] = overlap
+        counts[col] = np.round(len(ix) / n_annots, 2)
 
     return res_mean, res_sum, counts
 
