@@ -12,14 +12,18 @@ from publang.utils.string import format_string_with_variables
 def parallelize_extract(func):
     """Decorator to parallelize the extraction process over texts."""
 
-    def wrapper(texts, *args, **kwargs):
+    def wrapper(text, *args, **kwargs):
         num_workers = kwargs.get("num_workers", 1)
-        if isinstance(texts, str):
-            texts = [texts]
+
+        # If only one text is provided, run the function directly
+        if isinstance(text, str):
+            return func(text, *args, **kwargs)
+        
         with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
-            futures = [exc.submit(func, text, *args, **kwargs) for text in texts]
+            futures = [exc.submit(func, t, *args, **kwargs) for t in text]
+        
         results = []
-        for future in tqdm.tqdm(futures, total=len(texts)):
+        for future in tqdm.tqdm(futures, total=len(text)):
             results.append(future.result())
         return results
 
@@ -30,9 +34,9 @@ def parallelize_extract(func):
 def extract_from_text(
     text: str,
     messages: str,
+    model: str,
     output_schema: Dict[str, object] = None,
     response_format: str = None,
-    model: str = "gpt-3.5-turbo",
     client=None,
     **kwargs
 ) -> Dict[str, str]:

@@ -28,7 +28,7 @@ def _extract_iteratively(
         _retries = retry_attempts
         while _retries > 0:
             res = extract_from_text(
-                row["content"], messages, output_schema, model, **kwargs
+                text=row["content"], messages=messages, output_schema=output_schema, model=model, **kwargs
             )
             # Check that main key contains values
             if res and all([res[key] for key in output_keys]):
@@ -167,7 +167,7 @@ def extract_on_match(
     res = extract_from_text(
         sections.content.to_list(),
         messages,
-        output_schema,
+        output_schema=output_schema,
         model=model,
         num_workers=num_workers,
     )
