@@ -45,36 +45,39 @@ def search_extract(
     messages: List[Dict[str, str]],
     output_schema: Dict[str, object],
     articles: List[Dict],
+    extraction_model: str,
+    extraction_client=None,
     output_path: str = None,
-    embeddings: pd.DataFrame = None,
-    embedding_model: str = "text-embedding-ada-002",
-    embedding_client=None,
-    embeddings_path: str = None,
+    embeds_path: str = None,
+    embed_model: str = "text-embedding-ada-002",
+    embed_client=None,
     min_chars: int = 30,
     max_chars: int = 4000,
-    subset_section: str = "Body",
-    chat_model: str = "gpt-3.5-turbo",
-    chat_client=None,
+    section: str = "Body",
     num_workers: int = 1,
     **kwargs
 ) -> pd.DataFrame:
     """Extract participant demographics from a list of articles using OpenAI's API.
 
     Args:
+        [Required]
         search_query (str): Query to use for semantic search.
         messages (list): List of messages to use for the extraction.
         output_schema (dict): Schema for the output.
         articles (list): List of articles. Each article is a dictionary with keys 'pmcid' and 'text'.
-        output_path (str): Path to JSON file to save the predictions to. If file exists, the predictions will
-            be loaded from the file, and extraction will start from the last article in the file.
-        embedding_model: OpenAI model to use for the embedding.
-        embedding_client: OpenAI client object to use for the embedding.
-        embeddings_path (str): Path to parquet file to save the embeddings to.
-        min_chars (int): Minimum number of chars per chunk.
-        max_chars (int): Maximum number of chars per chunk.
-        subset_section (str): Optional header to use for subset extraction.
-        chat_model (str): Name of the OpenAI model to use for the extraction.
-        chat_client: OpenAI client object to use for the extraction.
+        extraction_model (str): Name of the chat completion model to use for the extraction.
+
+        [Optional]
+        extraction_client: OpenAI client object to use for the extraction.
+        output_path (str): Path to JSON prediction. If file exists, the
+            extraction will start from previous article in file.
+        embeds_path (str): Path to parquet file to save the embeddings to.
+            If file exists, the embeddings will be loaded from the file.
+        embed_model: Model to use for the embedding.
+        embed_client: OpenAI client object to use for the embedding.
+        min_chars (int): Minimum chars per chunk.
+        max_chars (int): Maximum chars per chunk.
+        section (str): Markdown header used to subset articles.
         num_workers (int): Number of workers to use for parallel processing.
         **kwargs: Additional keyword arguments to pass to the OpenAI API.
     Returns:
@@ -82,11 +85,11 @@ def search_extract(
         pd.DataFrame: Dataframe containing the chunked embeddings.
     """
     embeddings = None
-    if embeddings_path is not None and os.path.exists(embeddings_path):
+    if embeds_path is not None and os.path.exists(embeds_path):
         # Load embeddings from file, but only for articles in input
         unique_pmcids = set([a["pmcid"] for a in articles])
         embeddings = pd.read_parquet(
-            embeddings_path, filters=[("pmcid", "in", unique_pmcids)]
+            embeds_path, filters=[("pmcid", "in", unique_pmcids)]
         )
 
     if embeddings is None:
@@ -95,38 +98,38 @@ def search_extract(
         print("Embedding articles...")
         embeddings = embed_pmc_articles(
             articles,
-            embedding_model,
+            embed_model,
             min_chars,
             max_chars,
             num_workers=num_workers,
-            client=embedding_client,
+            client=embed_client,
         )
         embeddings = pd.DataFrame(embeddings)
 
-        if embeddings_path is not None:
-            embeddings.to_parquet(embeddings_path, index=False)
+        if embeds_path is not None:
+            embeddings.to_parquet(embeds_path, index=False)
 
-    if subset_section is not None:
-        embeddings = embeddings[embeddings.section_0 == subset_section]
+    if section is not None:
+        embeddings = embeddings[embeddings.section_0 == section]
 
     # Search for query in chunks
     print("Searching for query in chunks...")
     ranks_df = get_chunk_query_distance(
-        embeddings, search_query, client=embedding_client, model=embedding_model
+        embeddings, search_query, client=embed_client, model=embed_model
     )
     ranks_df.sort_values("distance", inplace=True)
 
     # For every document, extract annotations by distance iteratively
     print("Extracting annotations...")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
         futures = [
-            executor.submit(
+            exc.submit(
                 _extract_iteratively,
                 sub_df,
                 messages,
                 output_schema,
-                chat_model,
-                client=chat_client,
+                extraction_model,
+                client=extraction_client,
                 **kwargs
             )
             for _, sub_df in ranks_df.groupby("pmcid", sort=False)
