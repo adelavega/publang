@@ -59,18 +59,6 @@ def test_extract_from_multiple(test_docs):
     assert len(result) == 5
 
 
-# Test extract_on_match function
-# def test_extract_on_match():
-    # embeddings_df = ...
-    # annotations_df = ...
-    # messages = "Extract annotations based on matching criteria."
-    # output_schema = {"param1": "value1", "param2": "value2"}
-    # model_name = "gpt-3.5-turbo"
-    # num_workers = 1
-
-    # result = extract_on_match(embeddings_df, annotations_df, messages, output_schema, model, num_workers)
-
-
 # # Test search_extract function
 # def test_search_extract():
 #     embeddings_df = ...
