@@ -11,10 +11,11 @@ from publang.utils.oai import get_openai_embedding
 
 def embed_pmc_articles(
     articles: Union[str, List[str]],
-    model_name: str = "text-embedding-ada-002",
+    model: str = "text-embedding-ada-002",
     min_chars: int = 30,
     max_chars: int = 4000,
     num_workers: int = 1,
+    meta_data: Dict[str, any] = None,
     **kwargs
 ) -> List[Dict[str, any]]:
     """Embed a PMC article using OpenAI's API.
@@ -25,7 +26,7 @@ def embed_pmc_articles(
     if isinstance(articles, str):
         articles = [articles]
 
-    def _split_embed(article, model, min_chars, max_chars, **kwargs):
+    def _split_embed(article, model, min_chars, max_chars, meta_data, **kwargs):
         split_doc = split_pmc_document(
             article, min_chars=min_chars, max_chars=max_chars
         )
@@ -33,9 +34,9 @@ def embed_pmc_articles(
         if split_doc:
             # Embed each chunk
             for chunk in split_doc:
-                res = get_openai_embedding(chunk["content"], model_name)
+                res = get_openai_embedding(chunk["content"], model, **kwargs)
                 chunk["embedding"] = res
-                for key, value in kwargs.items():
+                for key, value in meta_data.items():
                     chunk[key] = value
             return split_doc
         else:
@@ -49,7 +50,8 @@ def embed_pmc_articles(
                 model,
                 min_chars,
                 max_chars,
-                **kwargs,
+                meta_data,
+                **kwargs
             )
             for article in articles
         ]
@@ -78,13 +80,14 @@ def _rank_numbers(numbers: List[float]) -> List[Tuple[float, int]]:
 
 
 def query_embeddings(
-    embeddings: List[List], query: str, compute_ranks=True
+    embeddings: List[List], query: str, 
+    **kwargs
 ) -> Tuple[List[float], List[int]]:
     """Query a list of embeddings with a query string. Returns the distances and ranks of the embeddings."""
 
     embeddings = np.array(embeddings)
 
-    query_embedding = get_openai_embedding(query)
+    query_embedding = get_openai_embedding(query, **kwargs)
     distances = euclidean_distances(
         embeddings, np.array(query_embedding).reshape(1, -1), squared=True
     )
@@ -92,11 +95,11 @@ def query_embeddings(
     return distances, _rank_numbers(distances)
 
 
-def get_chunk_query_distance(embeddings_df, query):
+def get_chunk_query_distance(embeddings_df, query, **kwargs):
     # For every document, get distance and rank between query and embeddings
     distances, ranks = zip(
         *[
-            query_embeddings(sub_df["embedding"].tolist(), query)
+            query_embeddings(sub_df["embedding"].tolist(), query, **kwargs)
             for pmcid, sub_df in embeddings_df.groupby("pmcid", sort=False)
         ]
     )
@@ -105,5 +108,7 @@ def get_chunk_query_distance(embeddings_df, query):
     ranks_df = embeddings_df[["pmcid", "content", "start_char", "end_char"]].copy()
     ranks_df["distance"] = np.concatenate(distances)
     ranks_df["rank"] = np.concatenate(ranks)
+
+    ranks_df.sort_values("distance", inplace=True)
 
     return ranks_df

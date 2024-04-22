@@ -28,3 +28,5 @@ For example, to use Fireworks AI:
 export OPENAI_API_BASE="https://api.fireworks.ai/inference/v1"
 export OPENAI_API_KEY="<YOUR_FIREWORKS_API_KEY>"
 ```
+
+Alternatively, you can pass an initialized `client` object to extraction functions.

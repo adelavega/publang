@@ -9,16 +9,36 @@ import concurrent.futures
 from publang.search.embed import get_chunk_query_distance
 from publang.utils.oai import get_openai_chatcompletion
 from publang.utils.string import format_string_with_variables
-from publang.search import get_relevant_chunks
 
 
+def parallelize_extract(func):
+    """Decorator to parallelize the extraction process over texts."""
+    def wrapper(texts, *args, **kwargs):
+        num_workers = kwargs.get("num_workers", 1)
+        if isinstance(texts, str):
+            texts = [texts]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+            futures = [
+                executor.submit(
+                    func, text, *args, **kwargs
+                )
+                for text in texts
+            ]
+        results = []
+        for future in tqdm.tqdm(futures, total=len(texts)):
+            results.append(future.result())
+        return results
+    return wrapper
+
+
+@parallelize_extract
 def extract_from_text(
-    texts: Union[str, List[str]],
+    text: str,
     messages: str,
     output_schema: Dict[str, object] = None,
     response_format: str = None,
     model: str = "gpt-3.5-turbo",
-    num_workers: int = 1,
+    client=None,
     **kwargs
 ) -> Dict[str, str]:
     """Extracts information from a text sample using an OpenAI LLM.
@@ -30,42 +50,22 @@ def extract_from_text(
         response_type: A string containing the type of response expected from the LLM (e.g. "json" or "text")
         model: A string containing the name of the LLM to be used for the extraction.
         num_workers: An integer containing the number of workers to be used for the extraction.
+        client: An OpenAI client object.
         **kwargs: Additional keyword arguments to be passed to the OpenAI API.
     """
+    # Encode text to ascii
+    text = text.encode("ascii", "ignore").decode()
 
-    if isinstance(texts, str):
-        texts = [texts]
+    messages = deepcopy(messages)
+    # Format the message with the text
+    for message in messages:
+        message["content"] = format_string_with_variables(
+            message["content"], text=text)
 
-    def _extract(text, messages, output_schema, model, **kwargs):
-        # Encode text to ascii
-        text = text.encode("ascii", "ignore").decode()
-
-        messages = deepcopy(messages)
-
-        # Format the message with the text
-        for message in messages:
-            message["content"] = format_string_with_variables(message["content"], text=text)
-
-        data = get_openai_chatcompletion(
-            messages, output_schema=output_schema, model=model,
-            response_format=response_format, **kwargs
-        )
-
-        return data
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
-        futures = [
-            executor.submit(
-                _extract, text, messages, output_schema, model, **kwargs
-            )
-            for text in texts
-        ]
-
-    results = []
-    for future in tqdm.tqdm(futures, total=len(texts)):
-        results.append(future.result())
-
-    return results
+    return get_openai_chatcompletion(
+        messages, output_schema=output_schema, model=model,
+        response_format=response_format, client=client, **kwargs
+    )
 
 
 def _extract_iteratively(sub_df, **kwargs):
@@ -75,7 +75,8 @@ def _extract_iteratively(sub_df, **kwargs):
         res = extract_from_text(row["content"], **kwargs)
         if res["groups"]:
             result = [
-                {**r, **row[["rank", "start_char", "end_char", "pmcid"]].to_dict()}
+                {**r,
+                 **row[["rank", "start_char", "end_char", "pmcid"]].to_dict()}
                 for r in res["groups"]
             ]
             return result
@@ -89,24 +90,40 @@ def search_extract(
     messages: List[Dict[str, str]],
     output_schema: Dict[str, object] = None,
     response_format: str = None,
-    model: str = "gpt-3.5-turbo",
+    chat_model: str = "gpt-3.5-turbo",
+    chat_client=None,
+    embed_client=None,
+    embed_model=None,
     num_workers: int = 1,
     **kwargs
 ):
-    """Search for query in embeddings_df and extract annotations from nearest chunks,
-    using heuristic to narrow down search space if specified.
+    """Search for query in embeddings_df and extract annotations from nearest
+    chunks using heuristic to narrow down search space if specified.
+
+    Args:
+        embeddings_df: A DataFrame containing the embeddings of the document chunks..
+        query: A string containing the query to find relevant chunks.
+        messages: A list of dictionaries containing the messages for the LLM.
+        output_schema: A dictionary containing the template for the prompt and the expected keys in the completion.
+        response_format: A string containing the type of response expected from the LLM (e.g. "json" or "text")
+        model: A string containing the name of the LLM to be used for the extraction.
+        num_workers: An integer containing the number of workers to be used for the extraction.
+        completion_client: An OpenAI client object for the completion API.
+        embed_client: An OpenAI client object for the embedding API.
+        **kwargs: Additional keyword arguments to be passed to the OpenAI API.
     """
 
     # Search for query in chunks
-    ranks_df = get_chunk_query_distance(embeddings_df, query)
-    ranks_df.sort_values("distance", inplace=True)
+    ranks_df = get_chunk_query_distance(
+        embeddings_df, query, client=embed_client, model=embed_model)
 
     # For every document, iteratively try to extract annotations by distance
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
         futures = [
-            executor.submit(
+            exc.submit(
                 _extract_iteratively,
-                sub_df, messages, output_schema, response_format, model, **kwargs
+                sub_df, messages, output_schema, response_format,
+                chat_model, client=chat_client, **kwargs
             )
             for _, sub_df in ranks_df.groupby("pmcid", sort=False)
         ]
@@ -118,38 +135,3 @@ def search_extract(
     results = pd.DataFrame(results)
 
     return results
-
-
-def extract_on_match(
-    embeddings_df,
-    annotations_df,
-    messages,
-    output_schema,
-    model="gpt-3.5-turbo",
-    num_workers=1,
-):
-    """Extract anntotations on chunk with relevant information (based on annotation meta data)"""
-
-    embeddings_df = embeddings_df[embeddings_df.section_0 == "Body"]
-
-    sections = get_relevant_chunks(embeddings_df, annotations_df)
-
-    res = extract_from_text(
-        sections.content.to_list(),
-        messages,
-        output_schema,
-        model=model,
-        num_workers=num_workers,
-    )
-
-    # Combine results into single df and add pmcid
-    pred_groups_df = []
-    for ix, r in enumerate(res):
-        rows = r["groups"]
-        pmcid = sections.iloc[ix]["pmcid"]
-        for row in rows:
-            row["pmcid"] = pmcid
-            pred_groups_df.append(row)
-    pred_groups_df = pd.DataFrame(pred_groups_df)
-
-    return sections, pred_groups_df
