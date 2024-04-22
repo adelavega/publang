@@ -25,7 +25,7 @@ def embed_pmc_articles(
     if isinstance(articles, str):
         articles = [articles]
 
-    def _split_embed(article, model_name, min_chars, max_chars, **kwargs):
+    def _split_embed(article, model, min_chars, max_chars, **kwargs):
         split_doc = split_pmc_document(
             article, min_chars=min_chars, max_chars=max_chars
         )
@@ -46,7 +46,7 @@ def embed_pmc_articles(
             executor.submit(
                 _split_embed,
                 article,
-                model_name,
+                model,
                 min_chars,
                 max_chars,
                 **kwargs,

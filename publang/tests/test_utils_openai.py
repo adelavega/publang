@@ -12,7 +12,7 @@ def test_get_openai_chatcompletion():
 
     response = get_openai_chatcompletion(
         messages=messages,
-        model_name="gpt-3.5-turbo",
+        model="gpt-3.5-turbo",
         temperature=0,
     )
 
@@ -38,7 +38,7 @@ def test_get_openai_chatcompletion_function_calling():
     response = get_openai_chatcompletion(
         messages=messages,
         output_schema=output_schema,
-        model_name="gpt-4",
+        model="gpt-4",
     )
 
     assert isinstance(response, dict)
@@ -51,7 +51,7 @@ def test_get_openai_embedding():
     input_text = "Hello, world!"
     model = "text-embedding-ada-002"
 
-    embedding = get_openai_embedding(input_text, model_name=model)
+    embedding = get_openai_embedding(input_text, model=model)
 
     assert len(embedding) == 1536
     assert isinstance(embedding[0], float)

@@ -47,32 +47,45 @@ def get_openai_chatcompletion(
     messages: List[Dict[str, str]],
     client: openai.OpenAI = None,
     output_schema: Dict[str, object] = None,
-    model_name: str = "gpt-4-0125-preview",
+    model: str = "gpt-4-0125-preview",
     temperature: float = 0,
     timeout: int = 30,
-    response_type: str = None,
-    kwargs: Dict[str, object] = None
+    response_format: str = None,
+    **kwargs
 ) -> str:
+    """Get a chat completion from OpenAI API
 
-    if kwargs is None:
-        kwargs = {}
-
-    kwargs.update({
-        "model": model_name,
-        "messages": messages,
-        "temperature": temperature,
-        "timeout": timeout,
-        "response_type": response_type
-    }
-    )
+    Args:
+        messages: A list of dictionaries containing the messages for the LLM.
+        client: An OpenAI client object.
+        output_schema: A dictionary containing the template for the prompt and the expected keys in the completion.
+        model: A string containing the name of the LLM to be used for the extraction.
+        temperature: A float containing the temperature for the LLM.
+        timeout: An integer containing the timeout for the LLM.
+        response_format: A string containing the type of response expected from the LLM (e.g. "json" or "text")
+        kwargs: Additional keyword arguments to be passed to the OpenAI API.
+    """
 
     if output_schema is not None:
+        if response_format == "json":
+            raise ValueError(
+                "Output schema is not supported with json response format")
+
         functions, function_call = _format_function(output_schema)
         kwargs["functions"] = functions
         kwargs["function_call"] = function_call
 
     if client is None:
         client = openai.OpenAI()
+
+    kwargs.update({
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+        "timeout": timeout,
+        "response_format": response_format
+    }
+    )
 
     completion = reexecutor(client.chat.completions.create, **kwargs)
 
@@ -81,6 +94,9 @@ def get_openai_chatcompletion(
     # If parameters were given, extract json
     if output_schema is not None:
         response = json.loads(message.function_call.arguments)
+    elif response_format == "json":
+        # TODO: Improve json validation
+        response = json.loads(message.content)
     else:
         response = message.content
 

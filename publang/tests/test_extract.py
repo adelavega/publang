@@ -40,7 +40,7 @@ TEST_TEMPLATE = {
 def test_extract_from_text(test_docs_body):
     text = test_docs_body[0]
     result = extract_from_text(
-        text, model_name="gpt-4-0125-preview", **TEST_TEMPLATE)
+        text, model="gpt-4-0125-preview", **TEST_TEMPLATE)
 
     expected_result = {'groups': [{'count': 28}, {'count': 20}, {'count': 30}]}
 
@@ -53,7 +53,7 @@ def test_extract_from_text(test_docs_body):
 def test_extract_from_multiple(test_docs):
     texts = [doc['text'] for doc in test_docs]
     result = extract_from_text(
-        texts, model_name="gpt-4-0125-preview", **TEST_TEMPLATE)
+        texts, model="gpt-4-0125-preview", **TEST_TEMPLATE)
 
     assert isinstance(result, list)
     assert len(result) == 5
@@ -68,7 +68,7 @@ def test_extract_from_multiple(test_docs):
     # model_name = "gpt-3.5-turbo"
     # num_workers = 1
 
-    # result = extract_on_match(embeddings_df, annotations_df, messages, output_schema, model_name, num_workers)
+    # result = extract_on_match(embeddings_df, annotations_df, messages, output_schema, model, num_workers)
 
 
 # # Test search_extract function
@@ -81,6 +81,6 @@ def test_extract_from_multiple(test_docs):
 #     output_path = "output.csv"
 #     num_workers = 2
 
-#     result = search_extract(embeddings_df, query, messages, output_schema, model_name, output_path, num_workers)
+#     result = search_extract(embeddings_df, query, messages, output_schema, model, output_path, num_workers)
 
 #     # Add assertions to validate the result
