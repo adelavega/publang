@@ -66,10 +66,15 @@ def get_openai_chatcompletion(
         kwargs: Additional keyword arguments to be passed to the OpenAI API.
     """
 
-    if output_schema is not None:
-        if response_format == "json":
-            raise ValueError("Output schema is not supported with json response format")
+    if response_format.get("type") == "json_object":
+        mode = "json"
+    elif output_schema is not None:
+        mode = "function"
+    else:
+        mode = "text"
 
+    # If response format is not given, and output schema is given, assume function call
+    if mode == "function":
         functions, function_call = _format_function(output_schema)
         kwargs["functions"] = functions
         kwargs["function_call"] = function_call
@@ -92,9 +97,9 @@ def get_openai_chatcompletion(
     message = completion.choices[0].message
 
     # If parameters were given, extract json
-    if output_schema is not None:
+    if mode == "function":
         response = json.loads(message.function_call.arguments)
-    elif response_format == "json":
+    elif mode == "json":
         # TODO: Improve json validation
         response = json.loads(message.content)
     else:
