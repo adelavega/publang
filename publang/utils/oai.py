@@ -38,9 +38,16 @@ if retry_attempts > 1:
 
 def _format_function(output_schema):
     """Format function for OpenAI function calling from parameters"""
-    functions = [{"name": "extractData", "parameters": output_schema}]
-
-    return functions, {"name": "extractData"}
+    return [
+        {
+            "type": "function",
+            "function": {
+                "name": "extractData",
+                "description": "Extract data from scientific text",
+                "parameters": output_schema
+            }
+        }
+    ]
 
 
 def get_openai_chatcompletion(
@@ -75,9 +82,7 @@ def get_openai_chatcompletion(
 
     # If response format is not given, and output schema is given, assume function call
     if mode == "function":
-        functions, function_call = _format_function(output_schema)
-        kwargs["functions"] = functions
-        kwargs["function_call"] = function_call
+        kwargs["tools"] = _format_function(output_schema)
 
     if client is None:
         client = openai.OpenAI()
@@ -98,7 +103,7 @@ def get_openai_chatcompletion(
 
     # If parameters were given, extract json
     if mode == "function":
-        response = json.loads(message.function_call.arguments)
+        response = json.loads(message.tool_calls[0].function.arguments)
     elif mode == "json":
         # TODO: Improve json validation
         response = json.loads(message.content)
