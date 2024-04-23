@@ -72,7 +72,6 @@ def get_openai_chatcompletion(
         response_format: A string containing the type of response expected from the LLM (e.g. "json" or "text")
         kwargs: Additional keyword arguments to be passed to the OpenAI API.
     """
-
     if response_format is not None and response_format.get("type") == "json_object":
         mode = "json"
     elif output_schema is not None:
