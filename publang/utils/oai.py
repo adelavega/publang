@@ -66,7 +66,7 @@ def get_openai_chatcompletion(
         kwargs: Additional keyword arguments to be passed to the OpenAI API.
     """
 
-    if response_format.get("type") == "json_object":
+    if response_format is not None and response_format.get("type") == "json_object":
         mode = "json"
     elif output_schema is not None:
         mode = "function"

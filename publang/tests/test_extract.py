@@ -41,10 +41,8 @@ def test_extract_from_text(test_docs_body):
 
     expected_result = {"groups": [{"count": 28}, {"count": 20}, {"count": 30}]}
 
-    res = result[0]
-
-    assert "groups" in res
-    assert res == expected_result
+    assert "groups" in result
+    assert result == expected_result
 
 
 @pytest.mark.vcr()
