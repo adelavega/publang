@@ -10,7 +10,7 @@ import concurrent.futures
 
 
 def _extract_iteratively(
-    sub_df, messages, output_schema, model, retry_attempts=2, **kwargs
+    sub_df, messages, model, output_schema, retry_attempts=2, **kwargs
 ):
     """Iteratively attempt to extract annotations from chunks in ranks_df.
 
@@ -43,9 +43,9 @@ def _extract_iteratively(
 def search_extract(
     search_query: str,
     messages: List[Dict[str, str]],
-    output_schema: Dict[str, object],
     articles: List[Dict],
     extraction_model: str,
+    output_schema: Dict[str, object],
     extraction_client=None,
     output_path: str = None,
     embeds_path: str = None,
@@ -63,13 +63,13 @@ def search_extract(
         [Required]
         search_query (str): Query to use for semantic search.
         messages (list): List of messages to use for the extraction.
-        output_schema (dict): Schema for the output.
         articles (list): List of articles. Each article is a dictionary with keys 'pmcid' and 'text'.
         extraction_model (str): Name of the chat completion model to use for the extraction.
+        output_schema (dict): Schema for the output.
 
         [Optional]
         extraction_client: OpenAI client object to use for the extraction.
-        output_path (str): Path to JSON prediction. If file exists, the
+        output_path (str): Path to predictions. If file exists, the
             extraction will start from previous article in file.
         embeds_path (str): Path to parquet file to save the embeddings to.
             If file exists, the embeddings will be loaded from the file.
@@ -126,9 +126,9 @@ def search_extract(
             exc.submit(
                 _extract_iteratively,
                 sub_df,
-                messages,
-                output_schema,
-                extraction_model,
+                messages=messages,
+                output_schema=output_schema,
+                model=extraction_model,
                 client=extraction_client,
                 **kwargs
             )

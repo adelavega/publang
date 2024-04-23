@@ -4,9 +4,8 @@ import tqdm
 from copy import deepcopy
 from typing import Dict
 import concurrent.futures
-
+from string import Template
 from publang.utils.oai import get_openai_chatcompletion
-from publang.utils.string import format_string_with_variables
 
 
 def parallelize_extract(func):
@@ -35,7 +34,7 @@ def extract_from_text(
     text: str,
     messages: str,
     model: str,
-    output_schema: Dict[str, object] = None,
+    output_schema: Dict[str, object],
     response_format: str = None,
     client=None,
     **kwargs
@@ -58,7 +57,7 @@ def extract_from_text(
     messages = deepcopy(messages)
     # Format the message with the text
     for message in messages:
-        message["content"] = format_string_with_variables(message["content"], text=text)
+        message["content"] = Template(message["content"]).substitute(text=text)
 
     return get_openai_chatcompletion(
         messages,
