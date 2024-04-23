@@ -5,10 +5,10 @@ import json
 from publang.search.embed import embed_pmc_articles, get_chunk_query_distance
 from publang.extract import extract_from_text
 from publang.search import get_relevant_chunks
-import tqdm
-import concurrent.futures
+from publang.utils.parallelize import parallelize_inputs
 
 
+@parallelize_inputs
 def _extract_iteratively(
     sub_df, messages, model, output_schema, retry_attempts=2, **kwargs
 ):
@@ -28,7 +28,8 @@ def _extract_iteratively(
         _retries = retry_attempts
         while _retries > 0:
             res = extract_from_text(
-                text=row["content"], messages=messages, output_schema=output_schema, model=model, **kwargs
+                row["content"], messages=messages,
+                output_schema=output_schema, model=model, **kwargs
             )
             # Check that main key contains values
             if res and all([res[key] for key in output_keys]):
@@ -119,28 +120,17 @@ def search_extract(
     )
     ranks_df.sort_values("distance", inplace=True)
 
-    # For every document, extract annotations by distance iteratively
+    inputs = [sub_df for _, sub_df in ranks_df.groupby("pmcid", sort=False)]
     print("Extracting annotations...")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
-        futures = [
-            exc.submit(
-                _extract_iteratively,
-                sub_df,
-                messages=messages,
-                output_schema=output_schema,
-                model=extraction_model,
-                client=extraction_client,
-                **kwargs
-            )
-            for _, sub_df in ranks_df.groupby("pmcid", sort=False)
-        ]
-
-        results = []
-        for future in tqdm.tqdm(futures, total=len(futures)):
-            results.append(future.result())
-            # Save every 10 results
-            if output_path is not None and len(results) % 10 == 0:
-                json.dump(results, open(output_path, "w"))
+    results = _extract_iteratively(
+        inputs,
+        messages=messages,
+        output_schema=output_schema,
+        model=extraction_model,
+        client=extraction_client,
+        num_workers=num_workers,
+        **kwargs
+    )
 
     if output_path is not None:
         json.dump(results, open(output_path, "w"))

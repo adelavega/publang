@@ -1,36 +1,13 @@
 """ Provides a high-level API for LLMs for the purpose of infomation retrieval from documents and evaluation of the results."""
 
-import tqdm
 from copy import deepcopy
 from typing import Dict
-import concurrent.futures
 from string import Template
 from publang.utils.oai import get_openai_chatcompletion
+from publang.utils.parallelize import parallelize_inputs
 
 
-def parallelize_extract(func):
-    """Decorator to parallelize the extraction process over texts."""
-
-    def wrapper(text, *args, **kwargs):
-        # Get the number of workers (pop)
-        num_workers = kwargs.pop("num_workers", 1)
-        
-        # If only one text is provided, run the function directly
-        if isinstance(text, str):
-            return func(text, *args, **kwargs)
-        
-        with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
-            futures = [exc.submit(func, t, *args, **kwargs) for t in text]
-        
-        results = []
-        for future in tqdm.tqdm(futures, total=len(text)):
-            results.append(future.result())
-        return results
-
-    return wrapper
-
-
-@parallelize_extract
+@parallelize_inputs
 def extract_from_text(
     text: str,
     messages: str,
