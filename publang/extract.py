@@ -12,8 +12,9 @@ def parallelize_extract(func):
     """Decorator to parallelize the extraction process over texts."""
 
     def wrapper(text, *args, **kwargs):
-        num_workers = kwargs.get("num_workers", 1)
-
+        # Get the number of workers (pop)
+        num_workers = kwargs.pop("num_workers", 1)
+        
         # If only one text is provided, run the function directly
         if isinstance(text, str):
             return func(text, *args, **kwargs)
