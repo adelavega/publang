@@ -4,72 +4,72 @@ interactions:
       sample is delimited with triple backticks. \n            Your task is to identify
       groups of participants that participated in the study, and underwent MRI. \n            If
       there is no mention of any participant groups, return a null array.\n            For
-      each group identify the number of participants in each grouCall the extractData
-      function to save the output.\n            Text sample: ```\n# Body\n \n## Introduction
-      \n  \nSocial cognitive deficits are a core feature of schizophrenia (Sz) ( )
-      and autism spectrum disorders (ASD) and contribute to impaired functional outcome
-      ( ;  ). One important aspect of social functioning is the ability to rapidly
-      and accurately perceive facial expressions. Impaired face-emotion recognition
-      (FER) has been extensively reported in Sz ( ;  ) and ASD ( ;  ;  ) however the
-      underlying neuronal substrates of these deficits are not fully understood and,
-      indeed, may arise from differential underlying neural pathologies ( ). Over
-      recent years, the contribution of sensory-processing deficits to cognitive impairments
-      has been increasingly appreciated ( ;  ), including the potential role of dysfunction
-      within subcortical components of the afferent visual streams ( ;  ). Here, we
-      utilize functional magnetic resonance imaging (fMRI) to evaluate the contributions
-      of impaired early sensory processing to FER impairments in Sz. Data were collected
-      as well from both neurotypical and ASD comparison groups to assess the specificity
-      and magnitude of observed activation deficits in Sz. \n\nDuring normative brain
-      function, FER is supported by activation of specific components of the social
-      brain( ), which includes structures along both the dorsal and ventral visual-cortical
-      pathways ( ;  ;  ). These pathways receive retinal information from the lateral
-      geniculate nucleus (LGN), which projects to primary visual cortex (V1). The
-      dorsal pathway receives its primary input from the magnocellular geniculostriate
-      pathway and is specialized for rapid detection of low spatial-frequency and
-      motion information. Key dorsal structures include motion-sensitive mid-temporal
-      regions (MT, MST). In Sz, differential deficits in magnocellular processing
-      have been reported and related to potentially impaired patterns of sensory gain
-      and functions of the N-methyl-D-aspartate-type glutamate receptors (NMDAR) (reviewed
-      in  ). Moreover, impairments in magnocellular function correlate with behavioral
-      measures of impaired FER in Sz, supporting the involvement of this pathway in
-      social cognition ( ,  ;  ). By contrast, the ventral visual stream receives
-      predominant input from the subcortical parvocellular system and is specialized
-      for slower but higher-resolution processing of stimulus details. Key targets
-      of the ventral stream include visual area V4 and the fusiform face complex (FFC).
-      \n\nAlong with the ventral and dorsal pathways, the presence of an anatomically
-      and functionally distinct third pathway specialized for social perception and
-      comprising the superior temporal sulcus (STS) region, has recently been proposed
-      ( ). The STS region has been reliably associated with processing biological
-      motion signals ( ;  ;  ) including dynamic social cues such as the changeable
-      aspects of facial features (eyes, lips). Impaired STS activation has been documented
-      in Sz but the basis for the deficit remains unknown ( ;  ,  ;  ;  ). \n\nIn
-      addition to the cortical system, humans retain an evolutionarily old retinotectal
-      system that mediates non-conscious affective processing   via   amygdala, superior
-      colliculus and the pulvinar nucleus of the thalamus (PulN) (reviewed in  ).
-      In addition to mediating retinogeniculate input into visual cortex, PulN also
-      mediates cortico-cortical interactions between successive brain regions within
-      the dorsal and ventral stream pathways (e.g.,  ), and is the site of greatest
-      NMDAR density within primate thalamus ( ). \n\nPulN is anatomically divided
-      into discrete, functionally differentiated subdivisions (e.g.,  ;  ). For example,
-      the visual pulvinar, consisting of its inferior (PI) and lateral (PL) subdivisions,
-      has dense connections with early visual sensory regions ( ) and likely plays
-      a modulatory role in visual information processing ( ). In addition, projections
-      from PI specifically innervate motion sensitive regions surrounding area MT,
-      especially MST ( ), and also serve as drivers to secondary areas of visual cortex
-      (e.g., V2) and as modulators to V1 ( ). On the other hand, medial pulvinar (PM)
-      is considered multimodal and is primarily coupled with prefrontal and temporal
-      regions including STS ( ) and may play a unique role in processing emotional
-      information (reviewed in  ). \n\nHere, we evaluate whole-brain fMRI activation
-      patterns during FER in Sz, relative to both neurotypical individuals and ASD.
-      Inclusion of ASD participants is based on a previous study involving simple
-      visual stimuli in which we observed a divergent pattern of disturbance within
-      early visual areas and PulN relative to Sz patients, despite similar magnitude
-      of FER impairment ( ). We hypothesized that, in Sz, deficits within FER-related
-      higher tier visual regions (e.g., STS) would be driven significantly by impaired
-      activation of both early visual regions (e.g., V1, MST) and PulN as well as
-      by impaired cortico-pulvinar interactions. Moreover, we hypothesized that deficit
-      patterns would be differential across Sz and ASD participants despite similar
-      levels of behavioral impairment, suggesting disorder-specific pathophysiological
+      each group identify the number of participants in each gropup.\n            Call
+      the extractData function to save the output.\n            Text sample: ```\n#
+      Body\n \n## Introduction \n  \nSocial cognitive deficits are a core feature
+      of schizophrenia (Sz) ( ) and autism spectrum disorders (ASD) and contribute
+      to impaired functional outcome ( ;  ). One important aspect of social functioning
+      is the ability to rapidly and accurately perceive facial expressions. Impaired
+      face-emotion recognition (FER) has been extensively reported in Sz ( ;  ) and
+      ASD ( ;  ;  ) however the underlying neuronal substrates of these deficits are
+      not fully understood and, indeed, may arise from differential underlying neural
+      pathologies ( ). Over recent years, the contribution of sensory-processing deficits
+      to cognitive impairments has been increasingly appreciated ( ;  ), including
+      the potential role of dysfunction within subcortical components of the afferent
+      visual streams ( ;  ). Here, we utilize functional magnetic resonance imaging
+      (fMRI) to evaluate the contributions of impaired early sensory processing to
+      FER impairments in Sz. Data were collected as well from both neurotypical and
+      ASD comparison groups to assess the specificity and magnitude of observed activation
+      deficits in Sz. \n\nDuring normative brain function, FER is supported by activation
+      of specific components of the social brain( ), which includes structures along
+      both the dorsal and ventral visual-cortical pathways ( ;  ;  ). These pathways
+      receive retinal information from the lateral geniculate nucleus (LGN), which
+      projects to primary visual cortex (V1). The dorsal pathway receives its primary
+      input from the magnocellular geniculostriate pathway and is specialized for
+      rapid detection of low spatial-frequency and motion information. Key dorsal
+      structures include motion-sensitive mid-temporal regions (MT, MST). In Sz, differential
+      deficits in magnocellular processing have been reported and related to potentially
+      impaired patterns of sensory gain and functions of the N-methyl-D-aspartate-type
+      glutamate receptors (NMDAR) (reviewed in  ). Moreover, impairments in magnocellular
+      function correlate with behavioral measures of impaired FER in Sz, supporting
+      the involvement of this pathway in social cognition ( ,  ;  ). By contrast,
+      the ventral visual stream receives predominant input from the subcortical parvocellular
+      system and is specialized for slower but higher-resolution processing of stimulus
+      details. Key targets of the ventral stream include visual area V4 and the fusiform
+      face complex (FFC). \n\nAlong with the ventral and dorsal pathways, the presence
+      of an anatomically and functionally distinct third pathway specialized for social
+      perception and comprising the superior temporal sulcus (STS) region, has recently
+      been proposed ( ). The STS region has been reliably associated with processing
+      biological motion signals ( ;  ;  ) including dynamic social cues such as the
+      changeable aspects of facial features (eyes, lips). Impaired STS activation
+      has been documented in Sz but the basis for the deficit remains unknown ( ;  ,  ;  ;  ).
+      \n\nIn addition to the cortical system, humans retain an evolutionarily old
+      retinotectal system that mediates non-conscious affective processing   via   amygdala,
+      superior colliculus and the pulvinar nucleus of the thalamus (PulN) (reviewed
+      in  ). In addition to mediating retinogeniculate input into visual cortex, PulN
+      also mediates cortico-cortical interactions between successive brain regions
+      within the dorsal and ventral stream pathways (e.g.,  ), and is the site of
+      greatest NMDAR density within primate thalamus ( ). \n\nPulN is anatomically
+      divided into discrete, functionally differentiated subdivisions (e.g.,  ;  ).
+      For example, the visual pulvinar, consisting of its inferior (PI) and lateral
+      (PL) subdivisions, has dense connections with early visual sensory regions (
+      ) and likely plays a modulatory role in visual information processing ( ). In
+      addition, projections from PI specifically innervate motion sensitive regions
+      surrounding area MT, especially MST ( ), and also serve as drivers to secondary
+      areas of visual cortex (e.g., V2) and as modulators to V1 ( ). On the other
+      hand, medial pulvinar (PM) is considered multimodal and is primarily coupled
+      with prefrontal and temporal regions including STS ( ) and may play a unique
+      role in processing emotional information (reviewed in  ). \n\nHere, we evaluate
+      whole-brain fMRI activation patterns during FER in Sz, relative to both neurotypical
+      individuals and ASD. Inclusion of ASD participants is based on a previous study
+      involving simple visual stimuli in which we observed a divergent pattern of
+      disturbance within early visual areas and PulN relative to Sz patients, despite
+      similar magnitude of FER impairment ( ). We hypothesized that, in Sz, deficits
+      within FER-related higher tier visual regions (e.g., STS) would be driven significantly
+      by impaired activation of both early visual regions (e.g., V1, MST) and PulN
+      as well as by impaired cortico-pulvinar interactions. Moreover, we hypothesized
+      that deficit patterns would be differential across Sz and ASD participants despite
+      similar levels of behavioral impairment, suggesting disorder-specific pathophysiological
       mechanisms underlying social cognitive impairments in neuropsychiatric populations.
       \n\n\n## Materials and Methods \n  \n### Participants \n  \nSeventy-eight participants
       took part, including 28 participants (age range 2154 years) diagnosed with schizophrenia
@@ -548,11 +548,12 @@ interactions:
       organizations, or those of the publisher, the editors and the reviewers. Any
       product that may be evaluated in this article, or claim that may be made by
       its manufacturer, is not guaranteed or endorsed by the publisher. \n\n \n```",
-      "role": "user"}], "model": "gpt-4-0125-preview", "function_call": {"name": "extractData"},
-      "functions": [{"name": "extractData", "parameters": {"properties": {"groups":
+      "role": "user"}], "model": "gpt-4-0125-preview", "response_format": null, "temperature":
+      0, "tools": [{"type": "function", "function": {"name": "extractData", "description":
+      "Extract data from scientific text", "parameters": {"properties": {"groups":
       {"items": {"properties": {"count": {"description": "Number of participants in
       this group", "type": "integer"}}, "required": ["count"], "type": "object"},
-      "type": "array"}}, "type": "object"}}], "temperature": 0}'
+      "type": "array"}}, "type": "object"}}}]}'
     headers:
       accept:
       - application/json
@@ -561,7 +562,7 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '44177'
+      - '44259'
       content-type:
       - application/json
       host:
@@ -571,18 +572,19 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA1yRy27CMBBF9/kKa9ZQOQFKya5Su0KVqi66KKDImElw65fsSQtC+ffK4VHoxvLM
-        9T2+Hh8yxkBtoGQgt4Kk8Xo4m83f3+KueaR2vt8Wlj+/jPWHeZ3oiTIwSA63/kRJZ9eddMZrJOXs
-        UZYBBWGi5tO84Dl/4JNeMG6DOtkaT8PxkOfFZOgDfiv8OTm3TkmMULJFxhhjh35NGe0Gd1AyPjh3
-        DMYoGoTycogxCE6nDogYVSRhCQZ/onSW0KbYttX6SqhbK1P6Sgqtb4CMgRWmR+KOgpD0JEhcQRkD
-        EZrWoKWUGg5LaIJrfVxCuTgsQbrW0hLK4qEbXJf8phzxbtXBBdqddt3lsdo1Prh1/JcdamVV3FYB
-        RXQ23R/J+SMoQVb9UNubOYEPzniqyH2hTcCcj4/f04/o/JNX+v1JJEdC3/iKPDulhLiPhKaqlW0w
-        +KD6OUPtq3wkp3w9q6ccsi77BQAA//8DAL/ZNQhxAgAA
+        H4sIAAAAAAAAA2xSy27bMBC86yuIPduFXk4q3ZIUbdoCOQQFCjQ2BIZePWKKpMmVHcfQvweSH5KN
+        8kAsdzizw13uPcagWkLKQJScRG3kNHnEH2/bRO1mm6d6vf53d1OXmzVtHz+C5gkmHUO/vqGgE+uL
+        0LWRSJVWB1hY5ISdanAbREkSRcltD9R6ibKjFYam8dQPwtnUWNxUuD0yS10JdJCyF48xxvb93nlU
+        S3yHlPmTU6ZG53iBkJ4vMQZWyy4D3LnKEVcEkwEUWhGqzrZqpBwBpLXMBJdyKHxY+1E8NIpLma3L
+        UPze/lrFq+Xd94fnj2d1/9P/Q39H9Q7SO9Mbyhslzg0a4ed8elWMMVC87rn4TpYL+saJX9EZA26L
+        pkZFnXXYz6GwujFuDunLfg5CN4rmkIZf28n46F8cI79dtHAh3Hr/ixfHqD0PQerCWP3qrnoKeaUq
+        V2YWuevfNm6xdxJd9CNvLqYIxuraUEZ6haqTDfzYvznowvDPBjycHUHSxOUFLwq8o1dwO0dYZ3ml
+        CrTGVv0vgNxkQRgGQYzxLAev9T4BAAD//wMAW1MDFg8DAAA=
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86dc0a6c0f9be73e-DFW
+      - 87991d89d97545f3-DFW
       Cache-Control:
       - no-cache, must-revalidate
       Connection:
@@ -592,14 +594,14 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 01 Apr 2024 22:33:30 GMT
+      - Wed, 24 Apr 2024 21:16:39 GMT
       Server:
       - cloudflare
       Set-Cookie:
-      - __cf_bm=rv3VSGAGlU9HEoIlzryVNqdYIzCmPk5IdtX0O3A6y3Q-1712010810-1.0.1.1-9l1BOCatEAICroXSLaXhm03NsPNPeAJvWVHoqsJtAbEs.rjek0_64phm7fQTKXvwM_5wY9J8OOjTLJii1FiDfg;
-        path=/; expires=Mon, 01-Apr-24 23:03:30 GMT; domain=.api.openai.com; HttpOnly;
+      - __cf_bm=p7UdVeqScNE4JLdmXW8avE0dAJsrY1Q1U9zhcwcIW4c-1713993399-1.0.1.1-cNSi26Q3aSjoRyUk5xGj70dYjj7wjelI4mG_TagRIkyy6_WMwlQ7_RqEH7orG8d9SvZZ9blHdrQslfqtwYzOhA;
+        path=/; expires=Wed, 24-Apr-24 21:46:39 GMT; domain=.api.openai.com; HttpOnly;
         Secure; SameSite=None
-      - _cfuvid=vY9eWDDo1r_fd0JtMSFSuErMN_w81JDBV9F7_ElK9fE-1712010810489-0.0.1.1-604800000;
+      - _cfuvid=JI4h6.Vpn4pbERqkS.Huu9YV0_s4UDiSKUDvK3HwON0-1713993399492-0.0.1.1-604800000;
         path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
       Transfer-Encoding:
       - chunked
@@ -612,25 +614,25 @@ interactions:
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '4906'
+      - '2561'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
       - max-age=15724800; includeSubDomains
       x-ratelimit-limit-requests:
-      - '5000'
+      - '10000'
       x-ratelimit-limit-tokens:
-      - '600000'
+      - '800000'
       x-ratelimit-remaining-requests:
-      - '4999'
+      - '9999'
       x-ratelimit-remaining-tokens:
-      - '589115'
+      - '789110'
       x-ratelimit-reset-requests:
-      - 12ms
+      - 6ms
       x-ratelimit-reset-tokens:
-      - 1.088s
+      - 816ms
       x-request-id:
-      - req_ddadf8324bc2ea3ab4b65a8b3594014e
+      - req_9db3497f1aeaece3df15c8036c4d4306
     status:
       code: 200
       message: OK

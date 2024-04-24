@@ -8,8 +8,9 @@ TEST_TEMPLATE = {
             "content": """You will be provided with a text sample/ The sample is delimited with triple backticks. 
             Your task is to identify groups of participants that participated in the study, and underwent MRI. 
             If there is no mention of any participant groups, return a null array.
-            For each group identify the number of participants in each grouCall the extractData function to save the output.
-            Text sample: ```{text}```""",
+            For each group identify the number of participants in each gropup.
+            Call the extractData function to save the output.
+            Text sample: ```${text}```""",
             "role": "user",
         }
     ],

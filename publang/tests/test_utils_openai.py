@@ -23,7 +23,9 @@ def test_get_openai_chatcompletion():
 
 @pytest.mark.vcr()
 def test_get_openai_chatcompletion_function_calling():
-    messages = [{"role": "user", "content": "How many fingers does a human hand have?"}]
+    messages = [
+        {"role": "user", "content": "How many fingers does a human \
+         hand have?. Call the extractData function to save the output."}]
 
     output_schema = {
         "type": "object",
