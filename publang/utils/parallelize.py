@@ -3,10 +3,13 @@ import tqdm
 import json
 
 
-def _save_results(results, output_path):
+def _save_results(results, output_path, every=None):
     """Save the results to a file."""
     if output_path is not None:
-        json.dump(results, open(output_path, "w"))
+        if every is None:
+            json.dump(results, open(output_path, "w"))
+        elif len(results) % every == 0:
+            json.dump(results, open(output_path, "w"))
     return results
 
 
@@ -23,21 +26,22 @@ def parallelize_inputs(func):
             _save_results(result, output_path)
             return result
 
-        if num_workers != 1:
+        # Run in parallel mode
+        if num_workers > 1:
             with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
-                inputs = [exc.submit(func, i, *args, **kwargs) for i in inputs]
-
-        # Loop through the inputs
-        results = []
-        for input in tqdm.tqdm(inputs):
-            # Serial mode
-            if num_workers == 1:
+                futures = [
+                    exc.submit(func, i, *args, **kwargs) for i in inputs
+                ]
+                results = []
+                for r in tqdm.tqdm(concurrent.futures.as_completed(futures),
+                                   total=len(inputs)):
+                    results.append(r.result())
+                    _save_results(results, output_path, every=10)
+        else:
+            results = []
+            for input in tqdm.tqdm(inputs):
                 results.append(func(input, *args, **kwargs))
-            else:
-                results.append(input.result())
-
-            if len(results) % 10 == 0:
-                _save_results(results, output_path)
+                _save_results(results, output_path, every=10)
 
         _save_results(results, output_path)
         return results
