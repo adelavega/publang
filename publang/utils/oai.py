@@ -4,6 +4,7 @@ import openai
 import json
 from typing import List, Dict
 import os
+import warnings
 
 from tenacity import (
     retry,
@@ -125,7 +126,15 @@ def get_openai_embedding(
     if client is None:
         client = openai.OpenAI()
 
-    resp = reexecutor(client.embeddings.create, input=input, model=model)
+    # If setting PUBLANG_WARN_ON_FAILURE to True, the function will return None if the API call fails
+    try:
+        resp = reexecutor(client.embeddings.create, input=input, model=model)
+    except Exception as e:
+        if os.getenv("PUBLANG_WARN_ON_FAILURE", False):
+            warnings.warn(f"OpenAI API call failed with error: {e}")
+            return None
+        else:
+            raise e
 
     embedding = resp.data[0].embedding
 

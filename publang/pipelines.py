@@ -41,6 +41,13 @@ def _extract_iteratively(
     return []
 
 
+def _filter_remaning(inputs, results):
+    """Filter articles based on results"""
+    pmcids = set([r["pmcid"] for r in results])
+
+    return [inp for pmcid, inp in inputs if pmcid not in pmcids]
+
+
 def search_extract(
     search_query: str,
     messages: List[Dict[str, str]],
@@ -120,9 +127,16 @@ def search_extract(
     )
     ranks_df.sort_values("distance", inplace=True)
 
-    inputs = [sub_df for _, sub_df in ranks_df.groupby("pmcid", sort=False)]
+    if output_path is not None and os.path.exists(output_path):
+        results = json.load(open(output_path))
+    else:
+        results = []
+
+    inputs = _filter_remaning(
+        ranks_df.groupby("pmcid", sort=False), results)
+
     print("Extracting annotations...")
-    results = _extract_iteratively(
+    results += _extract_iteratively(
         inputs,
         messages=messages,
         output_schema=output_schema,
