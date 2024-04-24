@@ -129,6 +129,7 @@ def search_extract(
         model=extraction_model,
         client=extraction_client,
         num_workers=num_workers,
+        output_path=output_path,
         **kwargs
     )
 
