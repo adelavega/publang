@@ -102,6 +102,9 @@ def get_openai_chatcompletion(
 
     # If parameters were given, extract json
     if mode == "function":
+        if message.tool_calls is None:
+            raise ValueError(
+                f"No tool calls found in completion. Message: {message.content}")
         response = json.loads(message.tool_calls[0].function.arguments)
     elif mode == "json":
         # TODO: Improve json validation
