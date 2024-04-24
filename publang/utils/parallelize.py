@@ -3,6 +3,13 @@ import tqdm
 import json
 
 
+def _save_results(results, output_path):
+    """Save the results to a file."""
+    if output_path is not None:
+        json.dump(results, open(output_path, "w"))
+    return results
+
+
 def parallelize_inputs(func):
     """Decorator to parallelize the extraction process over texts."""
 
@@ -12,8 +19,9 @@ def parallelize_inputs(func):
 
         # If only one, run in serial mode
         if not isinstance(inputs, list):
-            num_workers = 1
-            inputs = [inputs]
+            result = func(inputs, *args, **kwargs)
+            _save_results(result, output_path)
+            return result
 
         if num_workers != 1:
             with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as exc:
@@ -29,14 +37,9 @@ def parallelize_inputs(func):
                 results.append(input.result())
 
             if len(results) % 10 == 0:
-                if output_path is not None:
-                    json.dump(results, open(output_path, "w"))
-        else:
-            # If only one result, delist
-            if len(results) == 1:
-                results = results[0]
-            if output_path is not None:
-                json.dump(results, open(output_path, "w"))
+                _save_results(results, output_path)
+
+        _save_results(results, output_path)
         return results
 
     return wrapper
