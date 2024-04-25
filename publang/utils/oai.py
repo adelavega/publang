@@ -4,7 +4,8 @@ import openai
 import json
 from typing import List, Dict
 import os
-import warnings
+import logging
+import untruncate_json
 
 from tenacity import (
     retry,
@@ -18,7 +19,25 @@ def reexecutor(func, *args, **kwargs):
     return func(*args, **kwargs)
 
 
-retry_attempts = int(os.getenv("PUBLANG_RETRY_ATTEMPTS", 50))
+def on_error(retry_state):
+    if os.getenv("PL_RAISE_EXCEPTIONS", 'False').lower() in ('true', '1', 't'):
+        raise retry_state.retry_object.retry_error_cls(retry_state.outcome)
+
+    # Log exception that was going to be raised
+    logging.error(
+        f"Max retried attempts reached. Exception: {retry_state.outcome.exception()}"
+        )
+
+    return False
+
+
+retry_attempts = int(os.getenv("PL_RETRY_ATTEMPTS", 10))
+
+
+def test_error(*args, **kwargs):
+    print("trying...")
+    raise ValueError("Test error")
+
 
 if retry_attempts > 1:
     retry_openai = retry(
@@ -28,10 +47,12 @@ if retry_attempts > 1:
                 openai.APIConnectionError,
                 openai.RateLimitError,
                 openai.Timeout,
+                ValueError,
             )
         ),
         wait=wait_random_exponential(multiplier=1, max=100),
         stop=stop_after_attempt(retry_attempts),
+        retry_error_callback=on_error
     )
 
     reexecutor = retry_openai(reexecutor)
@@ -56,8 +77,8 @@ def get_openai_chatcompletion(
     client: openai.OpenAI = None,
     output_schema: Dict[str, object] = None,
     model: str = "gpt-4-0125-preview",
-    temperature: float = 0,
-    timeout: int = 30,
+    temperature: float = 0.01,
+    timeout: int = 60,
     response_format: str = None,
     **kwargs
 ) -> str:
@@ -99,19 +120,44 @@ def get_openai_chatcompletion(
 
     completion = reexecutor(client.chat.completions.create, **kwargs)
 
-    message = completion.choices[0].message
+    if completion is False:
+        return False
 
-    # If parameters were given, extract json
+    choice = completion.choices[0]
+
+    # If parameters were given, validate & extract json
+    response = False
     if mode == "function":
-        if message.tool_calls is None:
-            raise ValueError(
-                f"No tool calls found in completion. Message: {message.content}")
-        response = json.loads(message.tool_calls[0].function.arguments)
+        if choice.message.tool_calls is None:
+            logging.error(
+                f"No tool calls found. Message: {choice.message.content}"
+            )
+        else:
+            arguments = choice.message.tool_calls[0].function.arguments
+
+            if choice.finish_reason != "completed":
+                logging.warning(
+                    f"Finish reason: '{choice.finish_reason}. Untruncating...",
+                )
+                response = json.loads(
+                    untruncate_json.complete(arguments)
+                )
+
+            else:
+                try:
+                    completion.validate()
+                except Exception as e:
+                    logging.error(
+                        f"Completion validation failed. Error: {e}",
+                    )
+                else:
+                    response = json.loads(arguments)
+
     elif mode == "json":
         # TODO: Improve json validation
-        response = json.loads(message.content)
+        response = json.loads(choice.message.content)
     else:
-        response = message.content
+        response = choice.message.content
 
     return response
 
@@ -126,15 +172,10 @@ def get_openai_embedding(
     if client is None:
         client = openai.OpenAI()
 
-    # If setting PUBLANG_WARN_ON_FAILURE to True, the function will return None if the API call fails
-    try:
-        resp = reexecutor(client.embeddings.create, input=input, model=model)
-    except Exception as e:
-        if os.getenv("PUBLANG_WARN_ON_FAILURE", False):
-            warnings.warn(f"OpenAI API call failed with error: {e}")
-            return None
-        else:
-            raise e
+    resp = reexecutor(client.embeddings.create, input=input, model=model)
+
+    if resp is False:
+        return False
 
     embedding = resp.data[0].embedding
 

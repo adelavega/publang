@@ -31,8 +31,10 @@ def _extract_iteratively(
                 row["content"], messages=messages,
                 output_schema=output_schema, model=model, **kwargs
             )
+            if res is False:
+                break
             # Check that main key contains values
-            if res and all([res[key] for key in output_keys]):
+            if all([res[key] for key in output_keys]):
                 return {
                     **res,
                     **row[["rank", "start_char", "end_char", "pmcid"]].to_dict(),
@@ -127,10 +129,9 @@ def search_extract(
     )
     ranks_df.sort_values("distance", inplace=True)
 
+    results = []
     if output_path is not None and os.path.exists(output_path):
         results = json.load(open(output_path))
-    else:
-        results = []
 
     inputs = _filter_remaning(
         ranks_df.groupby("pmcid", sort=False), results)
@@ -143,9 +144,10 @@ def search_extract(
         model=extraction_model,
         client=extraction_client,
         num_workers=num_workers,
-        output_path=output_path,
         **kwargs
     )
+
+    results = [r for r in results if r]
 
     if output_path is not None:
         json.dump(results, open(output_path, "w"))
@@ -176,6 +178,9 @@ def extract_on_match(
         model=model,
         num_workers=num_workers,
     )
+
+    if not res:
+        return None
 
     # Combine results into single df and add pmcid
     pred_groups_df = []
