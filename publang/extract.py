@@ -1,66 +1,47 @@
 """ Provides a high-level API for LLMs for the purpose of infomation retrieval from documents and evaluation of the results."""
 
-import tqdm
 from copy import deepcopy
-from typing import List, Dict, Union
-import concurrent.futures
-
+from typing import Dict
+from string import Template
 from publang.utils.oai import get_openai_chatcompletion
-from publang.utils.string import format_string_with_variables
+from publang.utils.parallelize import parallelize_inputs
 
 
+@parallelize_inputs
 def extract_from_text(
-    texts: Union[str, List[str]],
+    text: str,
     messages: str,
+    model: str,
     output_schema: Dict[str, object],
-    model_name: str = "gpt-3.5-turbo",
-    num_workers: int = 1,
+    response_format: str = None,
+    client=None,
+    **kwargs
 ) -> Dict[str, str]:
     """Extracts information from a text sample using an OpenAI LLM.
 
     Args:
-        texts (Union[str, List[str]]): The text to extract information from.
-        messages (str): The message to use for the extraction.
-        output_schema (Dict[str, object]): The schema for the output.
-        model_name (str, optional): The name of the OpenAI model to use.
-        num_workers (int, optional): The number of worker threads to use.
-    Returns:
-        Dict[str, str]: The extracted information.
+        text: A string containing the text sample.
+        messages: A list of dictionaries containing the messages for the LLM.
+        output_schema: A dictionary containing the template for the prompt and the expected keys in the completion.
+        response_type: A string containing the type of response expected from the LLM (e.g. "json" or "text")
+        model: A string containing the name of the LLM to be used for the extraction.
+        num_workers: An integer containing the number of workers to be used for the extraction.
+        client: An OpenAI client object.
+        **kwargs: Additional keyword arguments to be passed to the OpenAI API.
     """
+    # Encode text to ascii
+    text = text.encode("ascii", "ignore").decode()
 
-    if isinstance(texts, str):
-        texts = [texts]
+    messages = deepcopy(messages)
+    # Format the message with the text
+    for message in messages:
+        message["content"] = Template(message["content"]).substitute(text=text)
 
-    def _extract(text, messages, output_schema, model_name):
-        # Encode text to ascii
-        text = text.encode("ascii", "ignore").decode()
-
-        messages = deepcopy(messages)
-
-        # Format the message with the text
-        for message in messages:
-            message["content"] = format_string_with_variables(message["content"], text=text)
-
-        data = get_openai_chatcompletion(
-            messages, output_schema=output_schema, model_name=model_name
-        )
-
-        return data
-
-    # If only one text, return single result
-    if len(texts) == 1:
-        return _extract(texts[0], messages, output_schema, model_name)
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
-        futures = [
-            executor.submit(
-                _extract, text, messages, output_schema, model_name
-            )
-            for text in texts
-        ]
-
-    results = []
-    for future in tqdm.tqdm(futures, total=len(texts)):
-        results.append(future.result())
-
-    return results
+    return get_openai_chatcompletion(
+        messages,
+        output_schema=output_schema,
+        model=model,
+        response_format=response_format,
+        client=client,
+        **kwargs
+    )

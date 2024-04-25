@@ -1,10 +1,11 @@
 interactions:
 - request:
-    body: '{"messages": [{"role": "user", "content": "How many fingers does a human
-      hand have?"}], "model": "gpt-4", "function_call": {"name": "extractData"}, "functions":
-      [{"name": "extractData", "parameters": {"type": "object", "properties": {"fingers":
-      {"type": "integer", "description": "Number of fingers in a human hand"}}}}],
-      "temperature": 0}'
+    body: '{"messages": [{"role": "user", "content": "How many fingers does a human          hand
+      have?. Call the extractData function to save the output."}], "model": "gpt-4",
+      "response_format": null, "temperature": 0, "tools": [{"type": "function", "function":
+      {"name": "extractData", "description": "Extract data from scientific text",
+      "parameters": {"type": "object", "properties": {"fingers": {"type": "integer",
+      "description": "Number of fingers in a human hand"}}}}}]}'
     headers:
       accept:
       - application/json
@@ -13,7 +14,7 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '339'
+      - '464'
       content-type:
       - application/json
       host:
@@ -23,19 +24,18 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA1yRzU7DMBCE73mK1Z5blDSlP7khOCB64oKQCIpcx00Mjm3ZG1RU5d2Rk7RpuVjW
-        jufT7PgUAaAsMQPkNSPeWDXfbndv9LxbPqwMqzcv5eI1fa9tGsvjzyPDWXCY/ZfgdHbdcdNYJUga
-        PcjcCUYiUJN1soiTeJOmvdCYUqhgqyzNl/N4laSjozaSC48ZfEQAAKf+DNl0KY6YQTw7TxrhPasE
-        ZpdHAOiMChNk3ktPTBPOJpEbTUKHuLpV6ko4tJqH1AVnSt0AAVCzpkeKIznG6YkRu4ICIHNV2whN
-        ITWecg2Q40HqSjifYwb3ue7w8r4bb91lD2Uq68ze/4sVENLXhRPMGx3QnowdQAHy2ffV3lSA1pnG
-        UkHmW+gAXKUDDqefmcRk7BLJEFPTfJ1GYz70v55EUwzbWCcv5UVd9AcAAP//AwA+2Q7rMwIAAA==
+        H4sIAAAAAAAAA2xSXWvjMBB8969Y9jk54jof2G+lzVGOlkJbrnCXYhRl47gnSzppDW1C/vshO7Hd
+        cH4Qy45mdjTrQwSA5QYzQLkTLCurxukd3V0XpfuevJrkev9zsU9/XT29Tvb1M7/gKDDM+p0kn1nf
+        pKmsIi6NbmHpSDAF1XgRJ2maTK+mDVCZDalAKyyPp+PJPE5OjJ0pJXnM4HcEAHBozuBNb+gDM5iM
+        zp2KvBcFYdZdAkBnVOig8L70LDTjqAel0Uw62NW1UgOAjVG5FEr1g9vvMKj7gIRSuVM38fLv4+zx
+        x/79YX0zf9rY2+3yfjmY10p/2sbQttayC2aAd/3sYhgAalE1XPpgJyTfChYXdAAUrqgr0hys42Gl
+        AVa4LXVBzq8wg9lKH/EL5xj9r347VccuX2UK68zaX8QVxEu/yx0J39gephedRd+abdZfFoTWmcpy
+        zuYP6SC7mLWi2P83PRjPTyAbFqrvp3F0con+0zNVefta68putdEx+gcAAP//AwCfDRDb0QIAAA==
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 86dc0b1dcefb4623-DFW
-      Cache-Control:
-      - no-cache, must-revalidate
+      - 87991e359eafe813-DFW
       Connection:
       - keep-alive
       Content-Encoding:
@@ -43,45 +43,41 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 01 Apr 2024 22:33:54 GMT
+      - Wed, 24 Apr 2024 21:17:05 GMT
       Server:
       - cloudflare
       Set-Cookie:
-      - __cf_bm=e9EeA2Xvt49IffBNTr9UtkL8PkG9vMYi3RkKuR8p3uc-1712010834-1.0.1.1-an5zbQDvlxxCDdfpgw_CH4qnHVG2tX1NlxO0AxMTLs8XQXOvhO2D0cvseDuL.nc85wwkUaQu7yKxSm85YNHwlw;
-        path=/; expires=Mon, 01-Apr-24 23:03:54 GMT; domain=.api.openai.com; HttpOnly;
+      - __cf_bm=9c6e9Ne.HzXk9u2VD853K5pnFLEdQ8T2K2S17sxvTDc-1713993425-1.0.1.1-gsKTrsDSSuweIIEKyD2zKPX5zAp23W67.sqra9ltPTVzDy.aGv_bOdIzEoZtd95vXFCA9rpo6z4FJEiHjztQDw;
+        path=/; expires=Wed, 24-Apr-24 21:47:05 GMT; domain=.api.openai.com; HttpOnly;
         Secure; SameSite=None
-      - _cfuvid=4lzShHdUuZdiozVKP3mit.JGMS4prR7qB5Two3bUylg-1712010834335-0.0.1.1-604800000;
+      - _cfuvid=xYBIv_43KU4x70WDWce.SHx5XeUrXdqN1JH7nNThWJ0-1713993425804-0.0.1.1-604800000;
         path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
       Transfer-Encoding:
       - chunked
-      access-control-allow-origin:
-      - '*'
       alt-svc:
       - h3=":443"; ma=86400
-      openai-model:
-      - gpt-4-0613
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '688'
+      - '1442'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
       - max-age=15724800; includeSubDomains
       x-ratelimit-limit-requests:
-      - '5000'
+      - '10000'
       x-ratelimit-limit-tokens:
-      - '80000'
+      - '300000'
       x-ratelimit-remaining-requests:
-      - '4999'
+      - '9999'
       x-ratelimit-remaining-tokens:
-      - '79973'
+      - '299957'
       x-ratelimit-reset-requests:
-      - 12ms
+      - 6ms
       x-ratelimit-reset-tokens:
-      - 20ms
+      - 8ms
       x-request-id:
-      - req_bf699b3463c7f764a6172eb5d80373ca
+      - req_de7251bbfb7a97883ab890308f2e9c9c
     status:
       code: 200
       message: OK

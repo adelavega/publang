@@ -4,6 +4,7 @@ import openai
 import json
 from typing import List, Dict
 import os
+import warnings
 
 from tenacity import (
     retry,
@@ -38,48 +39,102 @@ if retry_attempts > 1:
 
 def _format_function(output_schema):
     """Format function for OpenAI function calling from parameters"""
-    functions = [{"name": "extractData", "parameters": output_schema}]
-
-    return functions, {"name": "extractData"}
+    return [
+        {
+            "type": "function",
+            "function": {
+                "name": "extractData",
+                "description": "Extract data from scientific text",
+                "parameters": output_schema
+            }
+        }
+    ]
 
 
 def get_openai_chatcompletion(
     messages: List[Dict[str, str]],
+    client: openai.OpenAI = None,
     output_schema: Dict[str, object] = None,
-    model_name: str = "gpt-4-0125-preview",
+    model: str = "gpt-4-0125-preview",
     temperature: float = 0,
     timeout: int = 30,
+    response_format: str = None,
+    **kwargs
 ) -> str:
+    """Get a chat completion from OpenAI API
 
-    kwargs = {
-        "model": model_name,
-        "messages": messages,
-        "temperature": temperature,
-        "timeout": timeout,
-    }
-    if output_schema is not None:
-        functions, function_call = _format_function(output_schema)
-        kwargs["functions"] = functions
-        kwargs["function_call"] = function_call
+    Args:
+        messages: A list of dictionaries containing the messages for the LLM.
+        client: An OpenAI client object.
+        output_schema: A dictionary containing the template for the prompt and the expected keys in the completion.
+        model: A string containing the name of the LLM to be used for the extraction.
+        temperature: A float containing the temperature for the LLM.
+        timeout: An integer containing the timeout for the LLM.
+        response_format: A string containing the type of response expected from the LLM (e.g. "json" or "text")
+        kwargs: Additional keyword arguments to be passed to the OpenAI API.
+    """
+    if response_format is not None and response_format.get("type") == "json_object":
+        mode = "json"
+    elif output_schema is not None:
+        mode = "function"
+    else:
+        mode = "text"
 
-    client = openai.OpenAI()
+    # If response format is not given, and output schema is given, assume function call
+    if mode == "function":
+        kwargs["tools"] = _format_function(output_schema)
+
+    if client is None:
+        client = openai.OpenAI()
+
+    kwargs.update(
+        {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "timeout": timeout,
+            "response_format": response_format,
+        }
+    )
+
     completion = reexecutor(client.chat.completions.create, **kwargs)
 
     message = completion.choices[0].message
 
-    # If parameters were given, extraction json
-    if output_schema is not None:
-        response = json.loads(message.function_call.arguments)
+    # If parameters were given, extract json
+    if mode == "function":
+        if message.tool_calls is None:
+            raise ValueError(
+                f"No tool calls found in completion. Message: {message.content}")
+        response = json.loads(message.tool_calls[0].function.arguments)
+    elif mode == "json":
+        # TODO: Improve json validation
+        response = json.loads(message.content)
     else:
         response = message.content
 
     return response
 
 
-def get_openai_embedding(input: str, 
-                         model_name: str = "text-embedding-ada-002") -> List[float]:
-    client = openai.OpenAI()
-    resp = reexecutor(client.embeddings.create, input=input, model=model_name)
+def get_openai_embedding(
+    input: str,
+    model: str = "text-embedding-ada-002",
+    client=None
+) -> List[float]:
+    """Get the embedding for a given input string"""
+
+    if client is None:
+        client = openai.OpenAI()
+
+    # If setting PUBLANG_WARN_ON_FAILURE to True, the function will return None if the API call fails
+    try:
+        resp = reexecutor(client.embeddings.create, input=input, model=model)
+    except Exception as e:
+        if os.getenv("PUBLANG_WARN_ON_FAILURE", False):
+            warnings.warn(f"OpenAI API call failed with error: {e}")
+            return None
+        else:
+            raise e
 
     embedding = resp.data[0].embedding
 
