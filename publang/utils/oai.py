@@ -130,7 +130,7 @@ def get_openai_embedding(
     try:
         resp = reexecutor(client.embeddings.create, input=input, model=model)
     except Exception as e:
-        if os.getenv("PUBLANG_WARN_ON_FAILURE", False):
+        if os.getenv("PUBLANG_WARN_ON_FAILURE", 'False') == 'True':
             warnings.warn(f"OpenAI API call failed with error: {e}")
             return None
         else:
