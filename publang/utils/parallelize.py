@@ -30,7 +30,6 @@ def parallelize_inputs(func):
             results = [
                 func(i, *args, **kwargs) for i in tqdm.tqdm(inputs)
             ]
-            results = []
         return results
 
     return wrapper

@@ -549,7 +549,7 @@ interactions:
       product that may be evaluated in this article, or claim that may be made by
       its manufacturer, is not guaranteed or endorsed by the publisher. \n\n \n```",
       "role": "user"}], "model": "gpt-4-0125-preview", "response_format": null, "temperature":
-      0, "tools": [{"type": "function", "function": {"name": "extractData", "description":
+      0.01, "tools": [{"type": "function", "function": {"name": "extractData", "description":
       "Extract data from scientific text", "parameters": {"properties": {"groups":
       {"items": {"properties": {"count": {"description": "Number of participants in
       this group", "type": "integer"}}, "required": ["count"], "type": "object"},
@@ -562,7 +562,7 @@ interactions:
       connection:
       - keep-alive
       content-length:
-      - '44259'
+      - '44262'
       content-type:
       - application/json
       host:
@@ -572,19 +572,19 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAAA2xSy27bMBC86yuIPduFXk4q3ZIUbdoCOQQFCjQ2BIZePWKKpMmVHcfQvweSH5KN
-        8kAsdzizw13uPcagWkLKQJScRG3kNHnEH2/bRO1mm6d6vf53d1OXmzVtHz+C5gkmHUO/vqGgE+uL
-        0LWRSJVWB1hY5ISdanAbREkSRcltD9R6ibKjFYam8dQPwtnUWNxUuD0yS10JdJCyF48xxvb93nlU
-        S3yHlPmTU6ZG53iBkJ4vMQZWyy4D3LnKEVcEkwEUWhGqzrZqpBwBpLXMBJdyKHxY+1E8NIpLma3L
-        UPze/lrFq+Xd94fnj2d1/9P/Q39H9Q7SO9Mbyhslzg0a4ed8elWMMVC87rn4TpYL+saJX9EZA26L
-        pkZFnXXYz6GwujFuDunLfg5CN4rmkIZf28n46F8cI79dtHAh3Hr/ixfHqD0PQerCWP3qrnoKeaUq
-        V2YWuevfNm6xdxJd9CNvLqYIxuraUEZ6haqTDfzYvznowvDPBjycHUHSxOUFLwq8o1dwO0dYZ3ml
-        CrTGVv0vgNxkQRgGQYzxLAev9T4BAAD//wMAW1MDFg8DAAA=
+        H4sIAAAAAAAAA2xSy27bMBC86yuIPduFJMuNo2PzKAIkBRq0SNDYEGh6JbOlSJpcpXYE/Xsh+SHZ
+        KA/EcoczO9xlHTAGcgUpA7HmJEqrxtcP8f0mLydfftjXb79m8f3qTobPIX96v3UWRi3DLH+joCPr
+        kzClVUjS6D0sHHLCVjW6ipJwNp1ezzqgNCtULa2wNE7GYRRPx9bhu8S/B+baSIEeUvYWMMZY3e2t
+        R73CLaQsHB0zJXrPC4T0dIkxcEa1GeDeS09cE4x6UBhNqFvbulJqAJAxKhNcqb7wftWDuG8UVyrb
+        7F6+Pj59f/j58qi2N8/bq9fiQ0eb5aDeXnpnO0N5pcWpQQP8lE8vijEGmpcdF7fkuKBbTvyCzhhw
+        V1QlamqtQz2HwpnK+jmkb/UchKk0zSGNZ81oeAzPjpOwWTRwJtwE/4sXh6g5DUGZwjqz9Bc9hVxq
+        6deZQ+67tw1bHBxFF93Iq7MpgnWmtJSR+YO6lY3CJPy814X+n/V4PD2AZIirM94kCg5ewe88YZnl
+        UhforJPdL4DcZlEcR1GCyTSHoAn+AQAA//8DAE6fD8oPAwAA
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 87991d89d97545f3-DFW
+      - 87a1e8893d7b4740-DFW
       Cache-Control:
       - no-cache, must-revalidate
       Connection:
@@ -594,14 +594,14 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 24 Apr 2024 21:16:39 GMT
+      - Thu, 25 Apr 2024 22:53:30 GMT
       Server:
       - cloudflare
       Set-Cookie:
-      - __cf_bm=p7UdVeqScNE4JLdmXW8avE0dAJsrY1Q1U9zhcwcIW4c-1713993399-1.0.1.1-cNSi26Q3aSjoRyUk5xGj70dYjj7wjelI4mG_TagRIkyy6_WMwlQ7_RqEH7orG8d9SvZZ9blHdrQslfqtwYzOhA;
-        path=/; expires=Wed, 24-Apr-24 21:46:39 GMT; domain=.api.openai.com; HttpOnly;
+      - __cf_bm=DdFDHBlNkmZ0JY0lNgGNr13m00YwRLejZjjEqNITq6g-1714085610-1.0.1.1-xuREDrHPqjba3CGCGS4u479.ifxtDEUxoOuCZRGTGiu07XUNNs.bqEvU1A5HlqzvAmUz7dVNOnuQpbAPlGrbUg;
+        path=/; expires=Thu, 25-Apr-24 23:23:30 GMT; domain=.api.openai.com; HttpOnly;
         Secure; SameSite=None
-      - _cfuvid=JI4h6.Vpn4pbERqkS.Huu9YV0_s4UDiSKUDvK3HwON0-1713993399492-0.0.1.1-604800000;
+      - _cfuvid=GnZEqv52KFXP7q738OVwjivwC2I.lPZvNlNNSwuZOQM-1714085610931-0.0.1.1-604800000;
         path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
       Transfer-Encoding:
       - chunked
@@ -614,7 +614,7 @@ interactions:
       openai-organization:
       - university-of-texas-at-austin-8nppuy
       openai-processing-ms:
-      - '2561'
+      - '13065'
       openai-version:
       - '2020-10-01'
       strict-transport-security:
@@ -632,7 +632,7 @@ interactions:
       x-ratelimit-reset-tokens:
       - 816ms
       x-request-id:
-      - req_9db3497f1aeaece3df15c8036c4d4306
+      - req_4708ab44f1f2a272925268e8cf4d0aa1
     status:
       code: 200
       message: OK
