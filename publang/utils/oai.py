@@ -5,6 +5,7 @@ import json
 from typing import List, Dict
 import os
 import logging
+import untruncate_json
 
 from tenacity import (
     retry,
@@ -122,19 +123,41 @@ def get_openai_chatcompletion(
     if completion is False:
         return False
 
-    message = completion.choices[0].message
+    choice = completion.choices[0]
 
-    # If parameters were given, extract json
+    # If parameters were given, validate & extract json
+    response = False
     if mode == "function":
-        if message.tool_calls is None:
-            raise ValueError(
-                f"No tool calls found in completion. Message: {message.content}")
-        response = json.loads(message.tool_calls[0].function.arguments)
+        if choice.message.tool_calls is None:
+            logging.error(
+                f"No tool calls found. Message: {choice.message.content}"
+            )
+        else:
+            arguments = choice.message.tool_calls[0].function.arguments
+
+            if choice.finish_reason != "completed":
+                logging.warning(
+                    f"Finish reason: '{choice.finish_reason}. Untruncating...",
+                )
+                response = json.loads(
+                    untruncate_json.complete(arguments)
+                )
+
+            else:
+                try:
+                    completion.validate()
+                except Exception as e:
+                    logging.error(
+                        f"Completion validation failed. Error: {e}",
+                    )
+                else:
+                    response = json.loads(arguments)
+
     elif mode == "json":
         # TODO: Improve json validation
-        response = json.loads(message.content)
+        response = json.loads(choice.message.content)
     else:
-        response = message.content
+        response = choice.message.content
 
     return response
 

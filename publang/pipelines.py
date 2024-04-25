@@ -181,7 +181,7 @@ def extract_on_match(
 
     if not res:
         return None
-    
+
     # Combine results into single df and add pmcid
     pred_groups_df = []
     for ix, r in enumerate(res):
