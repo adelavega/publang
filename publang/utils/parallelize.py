@@ -1,29 +1,18 @@
 import concurrent.futures
 import tqdm
-import json
-
-
-def _save_results(results, output_path, every=None):
-    """Save the results to a file."""
-    if output_path is not None:
-        if every is None:
-            json.dump(results, open(output_path, "w"))
-        elif len(results) % every == 0:
-            json.dump(results, open(output_path, "w"))
-    return results
 
 
 def parallelize_inputs(func):
     """Decorator to parallelize the extraction process over texts."""
 
-    def wrapper(inputs, *args, output_path=None, **kwargs):
+    def wrapper(inputs, *args, **kwargs):
         # Get the number of workers (pop)
         num_workers = kwargs.pop("num_workers", 1)
 
         # If only one, run in serial mode
         if not isinstance(inputs, list):
             result = func(inputs, *args, **kwargs)
-            _save_results(result, output_path)
+
             return result
 
         # Run in parallel mode
@@ -32,18 +21,15 @@ def parallelize_inputs(func):
                 futures = [
                     exc.submit(func, i, *args, **kwargs) for i in inputs
                 ]
-                results = []
-                for r in tqdm.tqdm(concurrent.futures.as_completed(futures),
-                                   total=len(inputs)):
-                    results.append(r.result())
-                    _save_results(results, output_path, every=10)
-        else:
-            results = []
-            for input in tqdm.tqdm(inputs):
-                results.append(func(input, *args, **kwargs))
-                _save_results(results, output_path, every=10)
+                results = [
+                    r.result() for r in concurrent.futures.as_completed(futures)
+                ]
 
-        _save_results(results, output_path)
+        else:
+            results = [
+                func(i, *args, **kwargs) for i in tqdm.tqdm(inputs)
+            ]
+            results = []
         return results
 
     return wrapper

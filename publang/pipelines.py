@@ -31,8 +31,10 @@ def _extract_iteratively(
                 row["content"], messages=messages,
                 output_schema=output_schema, model=model, **kwargs
             )
+            if not res:
+                break
             # Check that main key contains values
-            if res and all([res[key] for key in output_keys]):
+            if all([res[key] for key in output_keys]):
                 return {
                     **res,
                     **row[["rank", "start_char", "end_char", "pmcid"]].to_dict(),
@@ -143,11 +145,12 @@ def search_extract(
         model=extraction_model,
         client=extraction_client,
         num_workers=num_workers,
-        output_path=output_path,
         **kwargs
     )
 
     if output_path is not None:
+        if os.path.exists(output_path):
+            results = json.load(open(output_path)) + results
         json.dump(results, open(output_path, "w"))
 
     return results
@@ -177,6 +180,9 @@ def extract_on_match(
         num_workers=num_workers,
     )
 
+    if not res:
+        return None
+    
     # Combine results into single df and add pmcid
     pred_groups_df = []
     for ix, r in enumerate(res):

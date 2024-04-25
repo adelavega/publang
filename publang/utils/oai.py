@@ -4,7 +4,7 @@ import openai
 import json
 from typing import List, Dict
 import os
-import warnings
+import logging
 
 from tenacity import (
     retry,
@@ -18,7 +18,25 @@ def reexecutor(func, *args, **kwargs):
     return func(*args, **kwargs)
 
 
-retry_attempts = int(os.getenv("PUBLANG_RETRY_ATTEMPTS", 50))
+def on_error(retry_state):
+    if os.getenv("PL_RAISE_EXCEPTIONS", 'False').lower() in ('true', '1', 't'):
+        raise retry_state.retry_object.retry_error_cls(retry_state.outcome)
+
+    # Log exception that was going to be raised
+    logging.error(
+        f"Max retried attempts reached. Exception: {retry_state.outcome.exception()}"
+        )
+
+    return False
+
+
+retry_attempts = int(os.getenv("PL_RETRY_ATTEMPTS", 10))
+
+
+def test_error(*args, **kwargs):
+    print("trying...")
+    raise ValueError("Test error")
+
 
 if retry_attempts > 1:
     retry_openai = retry(
@@ -28,10 +46,12 @@ if retry_attempts > 1:
                 openai.APIConnectionError,
                 openai.RateLimitError,
                 openai.Timeout,
+                ValueError,
             )
         ),
         wait=wait_random_exponential(multiplier=1, max=100),
         stop=stop_after_attempt(retry_attempts),
+        retry_error_callback=on_error
     )
 
     reexecutor = retry_openai(reexecutor)
@@ -99,6 +119,9 @@ def get_openai_chatcompletion(
 
     completion = reexecutor(client.chat.completions.create, **kwargs)
 
+    if completion is False:
+        return False
+
     message = completion.choices[0].message
 
     # If parameters were given, extract json
@@ -126,15 +149,10 @@ def get_openai_embedding(
     if client is None:
         client = openai.OpenAI()
 
-    # If setting PUBLANG_WARN_ON_FAILURE to True, the function will return None if the API call fails
-    try:
-        resp = reexecutor(client.embeddings.create, input=input, model=model)
-    except Exception as e:
-        if os.getenv("PUBLANG_WARN_ON_FAILURE", 'False') == 'True':
-            warnings.warn(f"OpenAI API call failed with error: {e}")
-            return None
-        else:
-            raise e
+    resp = reexecutor(client.embeddings.create, input=input, model=model)
+
+    if resp is False:
+        return False
 
     embedding = resp.data[0].embedding
 
