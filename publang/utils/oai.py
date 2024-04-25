@@ -76,8 +76,8 @@ def get_openai_chatcompletion(
     client: openai.OpenAI = None,
     output_schema: Dict[str, object] = None,
     model: str = "gpt-4-0125-preview",
-    temperature: float = 0,
-    timeout: int = 30,
+    temperature: float = 0.01,
+    timeout: int = 60,
     response_format: str = None,
     **kwargs
 ) -> str:

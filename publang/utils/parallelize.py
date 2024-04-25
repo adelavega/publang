@@ -22,7 +22,8 @@ def parallelize_inputs(func):
                     exc.submit(func, i, *args, **kwargs) for i in inputs
                 ]
                 results = [
-                    r.result() for r in concurrent.futures.as_completed(futures)
+                    r.result() for r in tqdm.tqdm(
+                        concurrent.futures.as_completed(futures), total=len(futures))
                 ]
 
         else:
