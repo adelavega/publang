@@ -125,6 +125,9 @@ def get_openai_chatcompletion(
 
     choice = completion.choices[0]
 
+    if choice.finish_reason == "length":
+        logging.warning("Finish reason: length")
+
     # If parameters were given, validate & extract json
     response = False
     if mode == "function":
@@ -134,19 +137,11 @@ def get_openai_chatcompletion(
             )
         else:
             arguments = choice.message.tool_calls[0].function.arguments
-
-            if choice.finish_reason == "length":
-                logging.warning("Ran out of tokens. Untruncating...")
-                response = json.loads(
-                    untruncate_json.complete(arguments)
-                )
-
-            else:
-                response = json.loads(arguments)
+            response = json.loads(untruncate_json.complete(arguments))
 
     elif mode == "json":
-        # TODO: Improve json validation
-        response = json.loads(choice.message.content)
+        response = json.loads(
+            untruncate_json.complete(choice.message.contents))
     else:
         response = choice.message.content
 
