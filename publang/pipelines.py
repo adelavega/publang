@@ -10,7 +10,7 @@ from publang.utils.parallelize import parallelize_inputs
 
 @parallelize_inputs
 def _extract_iteratively(
-    sub_df, messages, model, output_schema, retry_attempts=2, **kwargs
+    sub_df, messages, model, output_schema, retry_attempts=3, **kwargs
 ):
     """Iteratively attempt to extract annotations from chunks in ranks_df.
 
