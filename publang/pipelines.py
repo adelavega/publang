@@ -33,8 +33,8 @@ def _extract_iteratively(
             )
             if res is False:
                 break
-            # Check that main key contains values
-            if all([res[key] for key in output_keys]):
+            # Check that main keys contains values
+            if all([res.get(key, False)  for key in output_keys]):
                 return {
                     **res,
                     **row[["rank", "start_char", "end_char", "pmcid"]].to_dict(),

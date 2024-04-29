@@ -77,7 +77,7 @@ def get_openai_chatcompletion(
     client: openai.OpenAI = None,
     output_schema: Dict[str, object] = None,
     model: str = "gpt-4-0125-preview",
-    temperature: float = 0.01,
+    temperature: float = 0,
     timeout: int = 60,
     response_format: str = None,
     **kwargs
@@ -125,6 +125,9 @@ def get_openai_chatcompletion(
 
     choice = completion.choices[0]
 
+    if choice.finish_reason == "length":
+        logging.warning("Finish reason: length")
+
     # If parameters were given, validate & extract json
     response = False
     if mode == "function":
@@ -134,28 +137,11 @@ def get_openai_chatcompletion(
             )
         else:
             arguments = choice.message.tool_calls[0].function.arguments
-
-            if choice.finish_reason != "completed":
-                logging.warning(
-                    f"Finish reason: '{choice.finish_reason}. Untruncating...",
-                )
-                response = json.loads(
-                    untruncate_json.complete(arguments)
-                )
-
-            else:
-                try:
-                    completion.validate()
-                except Exception as e:
-                    logging.error(
-                        f"Completion validation failed. Error: {e}",
-                    )
-                else:
-                    response = json.loads(arguments)
+            response = json.loads(untruncate_json.complete(arguments))
 
     elif mode == "json":
-        # TODO: Improve json validation
-        response = json.loads(choice.message.content)
+        response = json.loads(
+            untruncate_json.complete(choice.message.contents))
     else:
         response = choice.message.content
 
