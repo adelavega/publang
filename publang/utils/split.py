@@ -130,7 +130,7 @@ def split_pmc_document(
 
     # If failed to split, markdown is not formatted properly
     # Skip for now
-    if len(re.split(f"\n# ", text)) == 1:
+    if len(re.split(f"\n## ", text)) == 1:
         warnings.warn("Skipping document, not in markdown")
         return
 

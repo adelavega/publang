@@ -31,7 +31,6 @@ def embed_pmc_articles(
         List[Dict[str, any]]: A list of dicts containing the embedded articles.
 
     """
-
     def _split_embed(article, model, min_chars, max_chars):
         split_doc = split_pmc_document(
             article['text'], min_chars=min_chars, max_chars=max_chars
