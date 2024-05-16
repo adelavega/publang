@@ -119,7 +119,7 @@ def search_extract(
         if embeds_path is not None:
             embeddings.to_parquet(embeds_path, index=False)
 
-    if section is not None:
+    if section is not None and 'section_0' in embeddings.columns:
         embeddings = embeddings[embeddings.section_0 == section]
 
     # Search for query in chunks
