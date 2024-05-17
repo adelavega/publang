@@ -94,30 +94,46 @@ def search_extract(
         pd.DataFrame: Dataframe containing the extracted values.
         pd.DataFrame: Dataframe containing the chunked embeddings.
     """
+    if articles is None and embeds_path is None:
+        raise ValueError("Either articles or embeddings must be provided.")
+
     embeddings = None
+    pmcids_need_embedding = set([a["pmcid"] for a in articles])
     if embeds_path is not None and os.path.exists(embeds_path):
         # Load embeddings from file, but only for articles in input
-        unique_pmcids = set([a["pmcid"] for a in articles])
         embeddings = pd.read_parquet(
-            embeds_path, filters=[("pmcid", "in", unique_pmcids)]
+            embeds_path, filters=[("pmcid", "in", pmcids_need_embedding)]
         )
 
-    if embeddings is None:
-        if articles is None:
-            raise ValueError("Either articles or embeddings must be provided.")
+        pmcids_need_embedding = pmcids_need_embedding - set(embeddings.pmcid)
+
+    if embeddings is None or len(pmcids_need_embedding) > 0:
         print("Embedding articles...")
-        embeddings = embed_pmc_articles(
-            articles,
+
+        to_embed = articles
+        if embeddings is not None:
+            to_embed = [
+                a for a in articles if a["pmcid"] in pmcids_need_embedding
+            ]
+
+        new_embeddings = embed_pmc_articles(
+            to_embed,
             embed_model,
             min_chars,
             max_chars,
             num_workers=num_workers,
             client=embed_client,
         )
-        embeddings = pd.DataFrame(embeddings)
+        new_embeddings = pd.DataFrame(new_embeddings)
 
-        if embeds_path is not None:
-            embeddings.to_parquet(embeds_path, index=False)
+        if embeds_path is not None and os.path.exists(embeds_path):
+            new_embeddings.to_parquet(
+                embeds_path, engine='fastparquet', index=None, append=True)
+        else:
+            new_embeddings.to_parquet(
+                embeds_path, index=None)
+
+        embeddings = pd.concat([embeddings, new_embeddings])
 
     if section is not None and 'section_0' in embeddings.columns:
         embeddings = embeddings[embeddings.section_0 == section]
