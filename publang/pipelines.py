@@ -128,10 +128,10 @@ def search_extract(
 
         if embeds_path is not None and os.path.exists(embeds_path):
             new_embeddings.to_parquet(
-                embeds_path, engine='fastparquet', index=None, append=True)
+                embeds_path, engine='fastparquet', append=True)
         else:
             new_embeddings.to_parquet(
-                embeds_path, index=None)
+                embeds_path, engine='fastparquet')
 
         embeddings = pd.concat([embeddings, new_embeddings])
 
