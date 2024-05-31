@@ -108,7 +108,6 @@ def search_extract(
 
         pmcids_need_embedding = pmcids_need_embedding - set(embeddings.pmcid)
 
-    assert 0
     if embeddings is None or len(pmcids_need_embedding) > 0:
         print("Embedding articles...")
 
@@ -133,7 +132,7 @@ def search_extract(
                 embeds_path, engine='fastparquet', append=True)
         else:
             new_embeddings.to_parquet(
-                embeds_path, engine='fastparquet')
+                embeds_path)
 
         embeddings = pd.concat([embeddings, new_embeddings])
 
