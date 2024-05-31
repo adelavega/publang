@@ -102,11 +102,13 @@ def search_extract(
     if embeds_path is not None and os.path.exists(embeds_path):
         # Load embeddings from file, but only for articles in input
         embeddings = pd.read_parquet(
-            embeds_path, filters=[("pmcid", "in", pmcids_need_embedding)]
+            embeds_path, filters=[("pmcid", "in", pmcids_need_embedding)],
+            engine='pyarrow'
         )
 
         pmcids_need_embedding = pmcids_need_embedding - set(embeddings.pmcid)
 
+    assert 0
     if embeddings is None or len(pmcids_need_embedding) > 0:
         print("Embedding articles...")
 
