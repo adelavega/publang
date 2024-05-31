@@ -98,15 +98,14 @@ def search_extract(
         raise ValueError("Either articles or embeddings must be provided.")
 
     embeddings = None
-    pmcids_need_embedding = set([a["pmcid"] for a in articles])
+    pmcids_in_articles = set([a["pmcid"] for a in articles])
     if embeds_path is not None and os.path.exists(embeds_path):
-        # Load embeddings from file, but only for articles in input
         embeddings = pd.read_parquet(
-            embeds_path, filters=[("pmcid", "in", pmcids_need_embedding)],
-            engine='pyarrow'
+            embeds_path,
+            engine='fastparquet'
         )
 
-        pmcids_need_embedding = pmcids_need_embedding - set(embeddings.pmcid)
+        pmcids_need_embedding = pmcids_in_articles - set(embeddings.pmcid)
 
     if embeddings is None or len(pmcids_need_embedding) > 0:
         print("Embedding articles...")
@@ -135,6 +134,8 @@ def search_extract(
                 embeds_path)
 
         embeddings = pd.concat([embeddings, new_embeddings])
+
+    embeddings = embeddings[embeddings.pmcid.isin(pmcids_in_articles)]
 
     if section is not None and 'section_0' in embeddings.columns:
         embeddings = embeddings[embeddings.section_0 == section]
