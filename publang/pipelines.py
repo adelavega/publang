@@ -126,6 +126,9 @@ def search_extract(
         )
         new_embeddings = pd.DataFrame(new_embeddings)
 
+        if 'section_2' not in new_embeddings.columns:
+            new_embeddings['section_2'] = None
+
         if embeds_path is not None and os.path.exists(embeds_path):
             new_embeddings.to_parquet(
                 embeds_path, engine='fastparquet', append=True)

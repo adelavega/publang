@@ -30,3 +30,11 @@ export OPENAI_API_KEY="<YOUR_FIREWORKS_API_KEY>"
 ```
 
 Alternatively, you can pass an initialized `client` object to extraction functions.
+
+
+## Environment keys
+
+The following envirnonment keys control publang behavior:
+
+`PL_RETRY_ATTEMPTS`: (default: 10) Number of attempts to retry API call before failing
+`PL_RAISE_EXCEPTIONS`: (default: false) Whether to raise an exemption to continue to next article.
