@@ -120,7 +120,7 @@ def get_openai_chatcompletion(
 
     completion = reexecutor(client.chat.completions.create, **kwargs)
 
-    if completion is False:
+    if completion is False or completion.choices is None:
         return False
 
     choice = completion.choices[0]
